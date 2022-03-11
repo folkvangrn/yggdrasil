@@ -16,9 +16,9 @@ jobs:
       - name: Build with Maven
         run: cd server && ./mvnw clean package
       - name: Copy artifact to main directory
-        run: mkdir artifacts && cp target/*.jar artifacts
+        run: cd server && mkdir artifacts && cp target/*.jar artifacts
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: Backend JAR file
-          path: artifacts
+          path: server/artifacts
