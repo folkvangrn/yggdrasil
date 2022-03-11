@@ -14,7 +14,7 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
       - name: Build with Maven
-        run: ./mvnw clean package
+        run: cd server && ./mvnw clean package
       - name: Copy artifact to main directory
         run: mkdir artifacts && cp target/*.jar artifacts
       - name: Upload artifacts
