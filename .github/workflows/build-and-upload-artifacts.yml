@@ -1,0 +1,24 @@
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+      - name: Build with Maven
+        run: ./mvnw clean package
+      - name: Copy artifact to main directory
+        run: mkdir artifacts && cp target/*.jar artifacts
+      - name: Upload artifacts
+        uses: actions/upload-artifacts@v3
+        with:
+          name: Backend JAR file
+          path: artifacts
