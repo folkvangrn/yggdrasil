@@ -21,4 +21,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Backend JAR file
-          path: server/artifacts
+          path: server/artifacts/*.jar
