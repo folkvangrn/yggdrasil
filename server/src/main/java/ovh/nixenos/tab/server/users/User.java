@@ -71,6 +71,10 @@ public class User {
     }
   }
 
+  /**
+   * setter method for username; throws InvalidArgumentException on null or
+   * empty argument
+   * */
   private void setUsername(String username) throws InvalidArgumentException {
     if (username == null) {
       throw new InvalidArgumentException("Username cannot be null");
@@ -81,6 +85,10 @@ public class User {
     this.username = username;
   }
 
+  /**
+   * setter method for user's first name; throws InvalidArgumentException on
+   * null or empty argument
+   * */
   private void setFirstName(String firstName) throws InvalidArgumentException {
     if (firstName == null) {
       throw new InvalidArgumentException("User's name cannot be null");
