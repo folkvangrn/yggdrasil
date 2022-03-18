@@ -1,4 +1,4 @@
-package com.workshop;
+package com.workshop.domain;
 
 import javax.persistence.*;
 import java.util.List;
@@ -24,5 +24,5 @@ public class Client {
     String phoneNumber;
 
     @OneToMany(mappedBy = "client")
-    private List<Object> clientVehicles;
+    private List<Vehicle> clientVehicles;
 }
