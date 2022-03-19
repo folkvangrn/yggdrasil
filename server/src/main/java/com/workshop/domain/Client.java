@@ -11,18 +11,18 @@ public class Client {
     @GeneratedValue
     private Long id;
 
-    @Column(length = 40) // company
-    String name;
+    @Column(length = 40)
+    private String companyName;
 
     @Column(nullable = false, length = 25)
-    String firstName;
+    private String firstName;
 
     @Column(nullable = false, length = 25)
-    String secondName;
+    private String lastName;
 
     @Column(nullable = false, length = 9)
-    String phoneNumber;
+    private String phoneNumber;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "client") //on delete restrict?
     private List<Vehicle> clientVehicles;
 }
