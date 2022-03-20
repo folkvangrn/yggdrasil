@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import ovh.nixenos.tab.server.exceptions.ConstructorCreationException;
 import ovh.nixenos.tab.server.exceptions.InvalidArgumentException;
 import ovh.nixenos.tab.server.exceptions.InvalidPasswordException;
@@ -19,6 +20,7 @@ import ovh.nixenos.tab.server.exceptions.InvalidPasswordException;
  * class that reflects user's account in system
  * */
 @Entity
+@Table(name = "USERS_TABLE")
 public class User {
 
   @Id @GeneratedValue(strategy = GenerationType.AUTO) private Integer id;
