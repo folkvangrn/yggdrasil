@@ -19,7 +19,8 @@ public class Request {
     private String result;
 
     @Column
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Column
     @Temporal(TemporalType.DATE)

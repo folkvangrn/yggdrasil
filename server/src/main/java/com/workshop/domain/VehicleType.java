@@ -1,20 +1,11 @@
 package com.workshop.domain;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "VEHICLETYPE")
-public class VehicleType {
-
-    @Id
-    public String codeType;
-
-    @Column
-    public String fullName;
-
-    @Column
-    public String vehicleGroup;
-
-    @Column
-    public String engineType;
+public enum VehicleType {
+    SEDAN,
+    COUPE,
+    SPORT,
+    HATCHBACK,
+    SUV,
+    CONVERTIBLE,
+    MINIVAN,
 }

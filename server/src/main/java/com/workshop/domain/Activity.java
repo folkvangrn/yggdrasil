@@ -21,7 +21,8 @@ public class Activity {
     private String result;
 
     @Column
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Column
     @Temporal(TemporalType.DATE)
@@ -38,5 +39,8 @@ public class Activity {
     @ManyToOne
     @JoinColumn(name ="personel_id", nullable = true)
     private Personel worker;
+
+    @ManyToOne
+    private ActvityDictionary activityDefinition;
 
 }
