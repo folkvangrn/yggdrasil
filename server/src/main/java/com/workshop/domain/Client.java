@@ -23,6 +23,13 @@ public class Client {
     @Column(nullable = false, length = 9)
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "client") //on delete restrict?
+    @Column
+    private String email;
+
+    @Column
+    private boolean isActive;
+
+    @OneToMany(mappedBy = "client")
     private List<Vehicle> clientVehicles;
+
 }

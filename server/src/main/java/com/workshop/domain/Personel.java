@@ -25,4 +25,5 @@ public class Personel {
 
     @OneToMany(mappedBy = "worker")
     private List<Activity> activities;
+
 }
