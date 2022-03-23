@@ -20,7 +20,7 @@ import ovh.nixenos.tab.server.exceptions.InvalidPasswordException;
  * class that reflects user's account in system
  * */
 @Entity
-@Table(name = "USERS_TABLE")
+@Table(name = "PERSONNEL_TABLE")
 public class User {
 
   @Id @GeneratedValue(strategy = GenerationType.AUTO) private Integer id;
