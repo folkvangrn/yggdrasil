@@ -1,11 +1,11 @@
 package com.workshop.domain;
 
 public enum VehicleType {
-    SEDAN,
-    COUPE,
-    SPORT,
-    HATCHBACK,
+    CITY_CAR,
+    COMPACT,
+    BIG_SEDAN,
     SUV,
-    CONVERTIBLE,
     MINIVAN,
+    TRUCK,
+    CONVERTIBLE,
 }

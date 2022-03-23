@@ -2,7 +2,7 @@ package com.workshop.domain;
 
 public enum Status {
     OPEN,
-    PROGRESS,
+    IN_PROGRESS,
     CANCELED,
     FINISH,
 }
