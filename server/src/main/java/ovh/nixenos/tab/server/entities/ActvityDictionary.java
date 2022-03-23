@@ -1,4 +1,4 @@
-package com.workshop.domain;
+package ovh.nixenos.tab.server.entities;
 
 import javax.persistence.*;
 

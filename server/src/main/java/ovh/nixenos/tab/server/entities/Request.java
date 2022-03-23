@@ -1,8 +1,9 @@
-package com.workshop.domain;
+package ovh.nixenos.tab.server.entities;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import ovh.nixenos.tab.server.users.User;
 
 @Entity
 @Table(name = "REQUESTS")
@@ -38,7 +39,7 @@ public class Request {
     private List<Activity> activities;
 
     @ManyToOne
-    @JoinColumn(name ="personel_id", nullable = false)
-    private Personel manager;
+    @JoinColumn(name ="presonnel_table_id", nullable = false)
+    private User manager;
 
 }
