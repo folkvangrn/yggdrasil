@@ -5,15 +5,17 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.OneToMany;
 import ovh.nixenos.tab.server.exceptions.ConstructorCreationException;
 import ovh.nixenos.tab.server.exceptions.InvalidArgumentException;
 import ovh.nixenos.tab.server.exceptions.InvalidPasswordException;
-
+import ovh.nixenos.tab.server.entities.*;
 /**
  * @TODO implement methods for this class
  *
@@ -59,6 +61,19 @@ public class User {
    * Checked as deletion of records in database is forbidden
    * */
   private Boolean active;
+
+
+  /**
+   * mapping of requests assigned to a manager and vice versa
+   * */
+  @OneToMany(mappedBy = "manager")
+  private List<Request> requests;
+
+  /**
+   * mapping of activities assigned to a worker and vice versa
+   * */
+  @OneToMany(mappedBy = "worker")
+  private List<Activity> activities;
 
   /**
    * empty not-accessible default contructor: use public ones instead
@@ -253,4 +268,33 @@ public class User {
     }
     return false;
   }
+
+  /**
+   * add new request to User
+   * */
+  public void addRequest(Request request) throws InvalidArgumentException {
+    if (request == null) {
+      throw new InvalidArgumentException("Argument cannot be null");
+    }
+    this.requests.add(request);
+  }
+
+  /**
+   * add new activity assigned to user
+   * */
+  public void addActivity(Activity activity) throws InvalidArgumentException {
+    if (activity == null) {
+      throw new InvalidArgumentException("Argument cannot be null");
+    }
+    this.activities.add(activity);
+  }
+
+  public List<Request> getRequests() {
+    return this.requests;
+  }
+
+  public List<Activity> getActivities() {
+    return this.activities;
+  }
+
 }

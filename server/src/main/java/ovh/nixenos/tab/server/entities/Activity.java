@@ -1,4 +1,4 @@
-package com.workshop.domain;
+package ovh.nixenos.tab.server.entities;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -34,12 +34,12 @@ public class Activity {
     private Date dateFinalized;
 
     @ManyToOne
-    @JoinColumn(name ="personnel_table_id", nullable = false)
+    @JoinColumn(name ="request_id", nullable = false)
     private Request request;
 
     @ManyToOne
     @JoinColumn(name ="personnel_table_id", nullable = true)
-    private Personel worker;
+    private User worker;
 
     @ManyToOne
     private ActvityDictionary activityDefinition;

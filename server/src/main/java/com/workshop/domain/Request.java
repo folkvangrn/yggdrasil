@@ -38,7 +38,7 @@ public class Request {
     private List<Activity> activities;
 
     @ManyToOne
-    @JoinColumn(name ="personel_id", nullable = false)
+    @JoinColumn(name ="user_id", nullable = false)
     private Personel manager;
 
 }
