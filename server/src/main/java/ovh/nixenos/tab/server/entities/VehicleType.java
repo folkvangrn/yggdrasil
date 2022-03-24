@@ -1,11 +1,12 @@
 package ovh.nixenos.tab.server.entities;
 
 public enum VehicleType {
-    SEDAN,
-    COUPE,
-    SPORT,
-    HATCHBACK,
+    CITY_CAR,
+    COMPACT,
+    FAMILY_CAR,
     SUV,
     CONVERTIBLE,
     MINIVAN,
+    TRUCK,
+    BUS
 }
