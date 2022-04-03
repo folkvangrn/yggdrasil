@@ -29,7 +29,7 @@ public class Request {
 
     @Column
     @Temporal(TemporalType.DATE)
-    private Date dateFinalized;
+    private Date dateFinalized; // date finalized or cancelled
 
     @ManyToOne()
     @JoinColumn(name ="vehicle_licensePlate", nullable = false)

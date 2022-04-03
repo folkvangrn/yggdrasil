@@ -17,7 +17,7 @@ public class Client {
     @Column(nullable = false, length = 25)
     private String firstName;
 
-    @Column(nullable = false, length = 25)
+    @Column(nullable = false, length = 25) // 40 chars :>
     private String lastName;
 
     @Column(nullable = false, length = 9)

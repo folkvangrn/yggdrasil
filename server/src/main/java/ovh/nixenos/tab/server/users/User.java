@@ -6,11 +6,23 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.Transient;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import javax.persistence.OneToMany;
 import ovh.nixenos.tab.server.exceptions.ConstructorCreationException;
 import ovh.nixenos.tab.server.exceptions.InvalidArgumentException;
@@ -25,6 +37,10 @@ import ovh.nixenos.tab.server.entities.*;
 @Table(name = "PERSONNEL_TABLE")
 public class User {
 
+  @Autowired
+  @Transient
+  private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
   @Id @GeneratedValue(strategy = GenerationType.AUTO) private Integer id;
 
   /*
@@ -35,7 +51,7 @@ public class User {
   /*
    * hash of the user's password
    */
-  private String passwordHash;
+  private String password;
 
   /*
    * user's first name
@@ -62,6 +78,7 @@ public class User {
    * */
   private Boolean active;
 
+  // private List<GrantedAuthority> authorities;
 
   /**
    * mapping of requests assigned to a manager and vice versa
@@ -91,6 +108,7 @@ public class User {
       this.setUsername(username);
       this.setFirstName(firstName);
       this.setLastName(lastName);
+      this.passwordEncoder = new BCryptPasswordEncoder();
       this.setPassword(password);
       this.setRole(role);
     } catch (InvalidArgumentException eInvalidArgumentExceptionInstance) {
@@ -144,21 +162,23 @@ public class User {
   /**
    * setter method for users password, throws InvalidArgumentException
    * */
-  private void setPassword(String password) throws InvalidArgumentException {
+  public void setPassword(String password) throws InvalidArgumentException {
     if (password == null) {
       throw new InvalidArgumentException("Password cannot be null");
     }
     if ((password.isBlank())) {
       throw new InvalidArgumentException("Password cannot be blank");
     }
-    this.passwordHash = hashPasswordString(password);
+    this.password = password;
   }
 
   /**
    * method for hashing user's password
    * @TODO implement hashing
    * */
-  private String hashPasswordString(String password) { return password; }
+  private String hashPasswordString(String password) { 
+    return "{bcrypt}" + passwordEncoder.encode(password);
+  }
 
   /**
    * setter method for user's role; throws InvalidArgumentException
@@ -182,7 +202,7 @@ public class User {
   /**
    * getter for password hash (private)
    * */
-  private String getPasswordHash() { return this.passwordHash; }
+  private String getPasswordHash() { return this.password; }
 
   /**
    * getter for username
@@ -250,12 +270,15 @@ public class User {
    * */
   public void suspendAccount() { this.active = false; }
 
+
+  public Boolean isActive() {return this.active;}
+
   /**
    * check's whether user belongs to specified role
    * */
   public Boolean checkPermission(String role) throws InvalidArgumentException {
     ArrayList<String> possible_roles =
-        new ArrayList<String>(Arrays.asList("admin, manager, worker"));
+        new ArrayList<String>(Arrays.asList("ADMIN, MANAGER, WORKER"));
     if (role == null) {
       throw new InvalidArgumentException("Role cannot be null");
     }
@@ -296,5 +319,25 @@ public class User {
   public List<Activity> getActivities() {
     return this.activities;
   }
+
+  public String getPassword() {
+    return this.password;
+  }
+
+  /*
+  public List<GrantedAuthority> getAuthorities() {
+      return this.authorities;
+  }
+
+  public void addAuthority(GrantedAuthority authority) throws InvalidArgumentException{
+    if (authority == null) {
+      throw new InvalidArgumentException("Provided authority cannot be null");
+    }
+    this.authorities.add(authority);
+  }
+  public void setAuthorities(List<GrantedAuthority> authorities) {
+    this.authorities = authorities;
+  }
+  */
 
 }
