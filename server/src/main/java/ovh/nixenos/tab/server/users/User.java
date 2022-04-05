@@ -324,6 +324,10 @@ public class User {
     return this.password;
   }
 
+  public Integer getId() {
+    return this.id;
+  }
+
   /*
   public List<GrantedAuthority> getAuthorities() {
       return this.authorities;
@@ -339,5 +343,13 @@ public class User {
     this.authorities = authorities;
   }
   */
+
+  public String jsonify() {
+    return new String(
+      "{ \"id\": \"" + this.getId().toString() + "\", \"username\": \"" + this.getUsername() + "\", \"firstName\": \"" + this.getFirstName() + 
+      "\", \"lastName\": \"" + this.getLastName() + "\", \"role\": \"" + this.getRole() +  
+      "\"}"
+    );
+  }
 
 }
