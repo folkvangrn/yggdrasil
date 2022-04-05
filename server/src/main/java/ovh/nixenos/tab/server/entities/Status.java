@@ -1,4 +1,4 @@
-package com.workshop.domain;
+package ovh.nixenos.tab.server.entities;
 
 public enum Status {
     OPEN,
