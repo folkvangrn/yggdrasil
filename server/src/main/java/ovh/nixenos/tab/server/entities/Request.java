@@ -16,7 +16,7 @@ public class Request {
     @Column(length = 500, nullable = false)
     private String description;
 
-    @Column
+    @Column(length = 500)
     private String result;
 
     @Column
@@ -24,11 +24,11 @@ public class Request {
     private Status status;
 
     @Column
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateRequest;
 
     @Column
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateFinalized;
 
     @ManyToOne()

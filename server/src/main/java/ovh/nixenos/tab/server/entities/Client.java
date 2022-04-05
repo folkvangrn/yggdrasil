@@ -14,10 +14,10 @@ public class Client {
     @Column(length = 40)
     private String companyName;
 
-    @Column(nullable = false, length = 25)
+    @Column(nullable = false, length = 40)
     private String firstName;
 
-    @Column(nullable = false, length = 25)
+    @Column(nullable = false, length = 40)
     private String lastName;
 
     @Column(nullable = false, length = 9)
@@ -25,9 +25,6 @@ public class Client {
 
     @Column
     private String email;
-
-    @Column
-    private boolean isActive;
 
     @OneToMany(mappedBy = "client")
     private List<Vehicle> clientVehicles;

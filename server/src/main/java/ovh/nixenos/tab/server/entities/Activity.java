@@ -5,20 +5,20 @@ import java.util.Date;
 import ovh.nixenos.tab.server.users.User;
 
 @Entity
-@Table(name = "ACTIVITY")
+@Table(name = "ACTIVITIES")
 public class Activity {
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @Column
+    @Column(nullable=false)
     private Long sequenceNumber;
 
-    @Column(length = 500)
+    @Column(length = 500, nullable=false)
     private String description;
 
-    @Column
+    @Column(length = 500)
     private String result;
 
     @Column
@@ -26,12 +26,12 @@ public class Activity {
     private Status status;
 
     @Column
-    @Temporal(TemporalType.DATE)
-    private Date dateRequest;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateRequested;
 
     @Column
-    @Temporal(TemporalType.DATE)
-    private Date dateFinalized;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateClosed;
 
     @ManyToOne
     @JoinColumn(name ="request_id", nullable = false)
@@ -42,6 +42,7 @@ public class Activity {
     private User worker;
 
     @ManyToOne
+    @JoinColumn(name ="activity_type", nullable = false)
     private ActvityDictionary activityDefinition;
 
 }
