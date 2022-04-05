@@ -7,3 +7,10 @@ Yggdrasil is a backend service for workshop-managing web application.
  - build new jar file: ```./mvnw clean package``` (for UNIX-based systems)
  - for windows hosts: ```./mvnw.exe clean package```
  - run built jar file: ```java -jar target/server-0.0.1-SNAPSHOT.jar```
+
+For development purposes postgresql database is needed to be accessible on host system. Configure it as follows:
+
+ - add new database tabprojekt
+ - add new user with full access to that database, with password tabprojekt and username tabprojekt
+ - make sure postgres is running on port 5432
+ - all above things can be configured via application.properties file 
