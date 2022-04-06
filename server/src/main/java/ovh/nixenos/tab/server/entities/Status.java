@@ -2,7 +2,7 @@ package ovh.nixenos.tab.server.entities;
 
 public enum Status {
     OPEN,
-    PROGRESS,
+    IN_PROGRESS,
     CANCELED,
     FINISH,
 }

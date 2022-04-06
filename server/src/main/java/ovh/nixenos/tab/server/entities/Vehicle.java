@@ -21,4 +21,35 @@ public class Vehicle {
     @OneToMany(mappedBy = "vehicle")
     private List<Request> requests;
 
+    public Long getVin() {
+        return vin;
+    }
+
+    public void setVin(Long vin) {
+        this.vin = vin;
+    }
+
+    public VehicleType getVehicleClass() {
+        return vehicleClass;
+    }
+
+    public void setVehicleClass(VehicleType vehicleClass) {
+        this.vehicleClass = vehicleClass;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public List<Request> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(List<Request> requests) {
+        this.requests = requests;
+    }
 }
