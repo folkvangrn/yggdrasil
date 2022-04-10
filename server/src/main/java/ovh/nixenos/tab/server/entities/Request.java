@@ -16,7 +16,7 @@ public class Request {
     @Column(length = 500, nullable = false)
     private String description;
 
-    @Column
+    @Column(length = 500)
     private String result;
 
     @Column
@@ -24,12 +24,12 @@ public class Request {
     private Status status;
 
     @Column
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateRequest;
 
     @Column
-    @Temporal(TemporalType.DATE)
-    private Date dateFinalized; // date finalized or cancelled
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateFinalized;
 
     @ManyToOne()
     @JoinColumn(name ="vehicle_licensePlate", nullable = false)
@@ -42,4 +42,75 @@ public class Request {
     @JoinColumn(name ="presonnel_table_id", nullable = false)
     private User manager;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Date getDateRequest() {
+        return dateRequest;
+    }
+
+    public void setDateRequest(Date dateRequest) {
+        this.dateRequest = dateRequest;
+    }
+
+    public Date getDateFinalized() {
+        return dateFinalized;
+    }
+
+    public void setDateFinalized(Date dateFinalized) {
+        this.dateFinalized = dateFinalized;
+    }
+
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
+    }
+
+    public List<Activity> getActivities() {
+        return activities;
+    }
+
+    public void setActivities(List<Activity> activities) {
+        this.activities = activities;
+    }
+
+    public User getManager() {
+        return manager;
+    }
+
+    public void setManager(User manager) {
+        this.manager = manager;
+    }
 }
