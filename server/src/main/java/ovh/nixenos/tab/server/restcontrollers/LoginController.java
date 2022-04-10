@@ -12,14 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class HeartbeatController {
-  @GetMapping("/api/heartbeat")
+public class LoginController {
+  @GetMapping("/login")
   public String heartbeat() {
-    return new String("UP");
-  }
-  @GetMapping("/api/heartbeat-secure")
-  public String secure_heartbeat() {
-    return new String("SECURE UP");
+    return new String("{'action': 'provide login info'}");
   }
 
 }

@@ -41,6 +41,7 @@ public class Activity {
     @JoinColumn(name ="personnel_table_id", nullable = true)
     private User worker;
 
+
     @ManyToOne
     @JoinColumn(name ="activity_type", nullable = false)
     private ActvityDictionary activityDefinition;
