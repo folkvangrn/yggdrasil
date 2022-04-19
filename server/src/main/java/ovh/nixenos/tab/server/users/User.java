@@ -34,7 +34,7 @@ import ovh.nixenos.tab.server.entities.*;
  * class that reflects user's account in system
  * */
 @Entity
-@Table(name = "PERSONNEL_TABLE")
+@Table(name = "PERSONNEL")
 public class User {
 
   @Autowired
