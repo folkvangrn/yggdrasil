@@ -76,6 +76,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .authorizeRequests()
         .antMatchers("/api/heartbeat-secure").authenticated()
         .antMatchers("/login**").permitAll()
+        .antMatchers("/api/login**").permitAll()
         .antMatchers("/api/users/register").permitAll()
         .anyRequest().permitAll()
         .and()
@@ -86,7 +87,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .and()
         .addFilterAt(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
         //.addFilterAt(mupaf, UsernamePasswordAuthenticationFilter.class)
-        .formLogin().loginProcessingUrl("/login")
+        .formLogin()
+        .loginProcessingUrl("/api/login")
+        .loginPage("/api/login")
         .and()
         .addFilter(new JwtAuthFilter(authenticationManager(), super.userDetailsService(), "SuPeRsEcReTsTrInG")); 
     }
