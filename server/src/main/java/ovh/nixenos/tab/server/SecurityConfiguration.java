@@ -1,6 +1,7 @@
 package ovh.nixenos.tab.server;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.servlet.ServletException;
@@ -30,6 +31,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import ovh.nixenos.tab.server.repositories.UserRepository;
 import ovh.nixenos.tab.server.services.CustomUserDetailsService;
@@ -111,5 +115,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
    public AuthenticationManager authenticationManagerBean() throws Exception {
        return super.authenticationManagerBean();
    }
+
+     @Bean
+  CorsConfigurationSource corsConfigurationSource() 
+  {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:3000", "http://127.0.0.1:8080", "http://localhost:8080"));
+    configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
+  }
 
 }

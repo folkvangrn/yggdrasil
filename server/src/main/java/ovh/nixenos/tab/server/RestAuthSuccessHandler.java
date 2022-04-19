@@ -47,7 +47,8 @@ public class RestAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
     .withExpiresAt(new Date(System.currentTimeMillis() + expirationTime)) // 4
     .sign(Algorithm.HMAC512(jwtSecret.getBytes("UTF-8"))); // 5
     User temporaryUser = userRepo.findByUsername(principal.getUsername());
-  response.getOutputStream().print("{ \"data\" : " + temporaryUser.jsonify() + ", \"token\" : { \"Bearer " + token + "\"}}"); // 6
+    response.addHeader("Content-Type", "application/json");
+  response.getOutputStream().print("{\"data\":" + temporaryUser.jsonify() + ",\"token\":\"Bearer " + token + "\"}"); // 6
   response.addHeader("Authorization", "Bearer " + token);
   }
 }
