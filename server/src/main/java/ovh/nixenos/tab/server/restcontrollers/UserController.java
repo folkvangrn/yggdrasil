@@ -30,12 +30,12 @@ public class UserController {
 
   @Autowired PasswordEncoder passwordEncoder;
 
-  @GetMapping("/api/users/all")
+  @GetMapping("/api/users")
   public Iterable<User> getAllUsers() {
     return this.userRepository.findAll();
   }
 
-  @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE}, value = "/api/users/register")
+  @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE}, value = "/api/users")
   public String createNewUser(@RequestBody String newUserJsonString) {
     Gson jsonParser = new Gson();
     User newUser = jsonParser.fromJson(newUserJsonString, User.class);
