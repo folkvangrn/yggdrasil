@@ -58,8 +58,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     CustomUserDetailsService userService;
 
-    public SecurityConfiguration(CustomUserDetailsService userService) {
+    private Integer expirationTime;// = 3600000;
+
+    private String jwtSecret;// = "SuPeRsEcReTsTrInG";
+
+    public SecurityConfiguration(CustomUserDetailsService userService, @Value("${jwt.expiration-time}") Integer expirationTime, @Value("${jwt.secret-string}") String jwtSecret) {
         this.userService = userService;
+        this.expirationTime = expirationTime;
+        this.jwtSecret = jwtSecret;
     }
 
     @Override
@@ -77,7 +83,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .antMatchers("/api/heartbeat-secure").authenticated()
         .antMatchers("/login**").permitAll()
         .antMatchers("/api/login**").permitAll()
-        .antMatchers("/api/users/register").permitAll()
+        .antMatchers("/api/users").hasAuthority("admin")
         .anyRequest().permitAll()
         .and()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -91,13 +97,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .loginProcessingUrl("/api/login")
         .loginPage("/api/login")
         .and()
-        .addFilter(new JwtAuthFilter(authenticationManager(), super.userDetailsService(), "SuPeRsEcReTsTrInG")); 
+        //.addFilter(new JwtAuthFilter(authenticationManager(), super.userDetailsService(), "SuPeRsEcReTsTrInG")); 
+        .addFilter(new JwtAuthFilter(authenticationManager(), super.userDetailsService(), jwtSecret)); 
     }
 
     @Bean
     public JsonObjectAuthenticationFilter authenticationFilter() throws Exception {
         JsonObjectAuthenticationFilter filter = new JsonObjectAuthenticationFilter();
-        filter.setAuthenticationSuccessHandler(new RestAuthSuccessHandler(userRepo)); // 1
+        filter.setAuthenticationSuccessHandler(new RestAuthSuccessHandler(userRepo, this.expirationTime, this.jwtSecret)); // 1
         filter.setAuthenticationFailureHandler(new RestAuthFailrueHandler()); // 2
         filter.setAuthenticationManager(super.authenticationManager()); // 3
         return filter;

@@ -15,7 +15,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
+import org.hibernate.type.TrueFalseType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,6 +48,7 @@ public class User {
   /*
    * username of the user
    */
+  @Column(unique = true, length = 40)
   private String username;
 
   /*
@@ -56,11 +59,13 @@ public class User {
   /*
    * user's first name
    */
+  @Column(length = 40)
   private String firstName;
 
   /*
    * user's last name
    */
+  @Column(length = 40)
   private String lastName;
 
   /*

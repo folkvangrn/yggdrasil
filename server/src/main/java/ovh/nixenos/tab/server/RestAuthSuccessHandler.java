@@ -24,17 +24,19 @@ import ovh.nixenos.tab.server.users.User;
 
 public class RestAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    //@Value("${jwt.expirationTime}")
-    private Integer expirationTime = 3600000;
+    @Value("${jwt.expiration-time}")
+    private Integer expirationTime;// = 3600000;
 
-    //@Value("${jwt.secret}")
-    private String jwtSecret = "SuPeRsEcReTsTrInG";
+    @Value("${jwt.secret-string}")
+    private String jwtSecret;// = "SuPeRsEcReTsTrInG";
 
     private UserRepository userRepo;
 
-    RestAuthSuccessHandler(UserRepository userRepo) {
+    RestAuthSuccessHandler(UserRepository userRepo, @Value("${jwt.expiration-time}") Integer expirationTime, @Value("${jwt.secret-string}") String jwtSecret) {
         super();
         this.userRepo = userRepo;
+        this.jwtSecret = jwtSecret;
+        this.expirationTime = expirationTime;
     }
 
   @Override
