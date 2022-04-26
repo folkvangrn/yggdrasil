@@ -77,6 +77,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .antMatchers("/api/heartbeat-secure").authenticated()
         .antMatchers("/login**").permitAll()
         .antMatchers("/api/users/register").permitAll()
+        .antMatchers("/api/requests").permitAll()
         .anyRequest().permitAll()
         .and()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
