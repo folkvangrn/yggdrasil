@@ -19,38 +19,44 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
+import ovh.nixenos.tab.server.dto.user.UserDTOOutput;
 import ovh.nixenos.tab.server.repositories.UserRepository;
+import ovh.nixenos.tab.server.services.UserService;
 import ovh.nixenos.tab.server.users.User;
 
 public class RestAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    @Value("${jwt.expiration-time}")
-    private Integer expirationTime;// = 3600000;
+  @Value("${jwt.expiration-time}")
+  private Integer expirationTime;// = 3600000;
 
-    @Value("${jwt.secret-string}")
-    private String jwtSecret;// = "SuPeRsEcReTsTrInG";
+  @Value("${jwt.secret-string}")
+  private String jwtSecret;// = "SuPeRsEcReTsTrInG";
 
-    private UserRepository userRepo;
+  private UserRepository userRepo;
 
-    RestAuthSuccessHandler(UserRepository userRepo, @Value("${jwt.expiration-time}") Integer expirationTime, @Value("${jwt.secret-string}") String jwtSecret) {
-        super();
-        this.userRepo = userRepo;
-        this.jwtSecret = jwtSecret;
-        this.expirationTime = expirationTime;
-    }
+  RestAuthSuccessHandler(UserRepository userRepo, Integer expirationTime, String jwtSecret) {
+    super();
+    this.userRepo = userRepo;
+    this.jwtSecret = jwtSecret;
+    this.expirationTime = expirationTime;
+  }
 
   @Override
-  public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, 
-                                      Authentication authentication) throws IOException, ServletException {
+  public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+      Authentication authentication) throws IOException, ServletException {
     clearAuthenticationAttributes(request);
-      UserDetails principal = (UserDetails) authentication.getPrincipal(); // 1
-  String token = JWT.create() // 2
-    .withSubject(principal.getUsername()) // 3
-    .withExpiresAt(new Date(System.currentTimeMillis() + expirationTime)) // 4
-    .sign(Algorithm.HMAC512(jwtSecret.getBytes("UTF-8"))); // 5
+    UserDetails principal = (UserDetails) authentication.getPrincipal(); // 1
+    String token = JWT.create() // 2
+        .withSubject(principal.getUsername()) // 3
+        .withExpiresAt(new Date(System.currentTimeMillis() + expirationTime)) // 4
+        .sign(Algorithm.HMAC512(jwtSecret.getBytes("UTF-8"))); // 5
     User temporaryUser = userRepo.findByUsername(principal.getUsername());
+    UserDTOOutput userDTO = new UserDTOOutput(temporaryUser);
+    ObjectMapper objectMapper = new ObjectMapper();
+    String result = objectMapper.writeValueAsString(userDTO);
     response.addHeader("Content-Type", "application/json");
-  response.getOutputStream().print("{" + temporaryUser.jsonify().replace("{", "").replace("}", "") + ",\"token\":\"" + token + "\"}"); // 6
-  response.addHeader("Authorization", "Bearer " + token);
+    response.getOutputStream()
+        .print("{" + result.replace("{", "").replace("}", "") + ",\"token\":\"" + token + "\"}"); // 6
+    response.addHeader("Authorization", "Bearer " + token);
   }
 }

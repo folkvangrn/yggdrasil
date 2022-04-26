@@ -37,6 +37,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import ovh.nixenos.tab.server.repositories.UserRepository;
 import ovh.nixenos.tab.server.services.CustomUserDetailsService;
+import ovh.nixenos.tab.server.services.UserService;
+import ovh.nixenos.tab.server.users.User;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -58,11 +60,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     CustomUserDetailsService userService;
 
-    private Integer expirationTime;// = 3600000;
+    private Integer expirationTime;
+    private String jwtSecret;
 
-    private String jwtSecret;// = "SuPeRsEcReTsTrInG";
 
-    public SecurityConfiguration(CustomUserDetailsService userService, @Value("${jwt.expiration-time}") Integer expirationTime, @Value("${jwt.secret-string}") String jwtSecret) {
+    public SecurityConfiguration(CustomUserDetailsService userService,
+            @Value("${jwt.expiration-time}") Integer expirationTime, @Value("${jwt.secret-string}") String jwtSecret) {
         this.userService = userService;
         this.expirationTime = expirationTime;
         this.jwtSecret = jwtSecret;
@@ -75,36 +78,35 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         mupaf.setAuthenticationManager(authenticationManager());
 
         http
-        .httpBasic()
-        .and()
-        .csrf()
-        .disable()
-        .authorizeRequests()
-        .antMatchers("/api/heartbeat-secure").authenticated()
-        .antMatchers("/login**").permitAll()
-        .antMatchers("/api/login**").permitAll()
-        .antMatchers("/api/users").hasAuthority("admin")
-        .anyRequest().permitAll()
-        .and()
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-        .exceptionHandling() // 1
-        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-        .and()
-        .addFilterAt(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-        //.addFilterAt(mupaf, UsernamePasswordAuthenticationFilter.class)
-        .formLogin()
-        .loginProcessingUrl("/api/login")
-        .loginPage("/api/login")
-        .and()
-        //.addFilter(new JwtAuthFilter(authenticationManager(), super.userDetailsService(), "SuPeRsEcReTsTrInG")); 
-        .addFilter(new JwtAuthFilter(authenticationManager(), super.userDetailsService(), jwtSecret)); 
+                .httpBasic()
+                .and()
+                .csrf()
+                .disable()
+                .authorizeRequests()
+                .antMatchers("/api/heartbeat-secure").authenticated()
+                .antMatchers("/login**").permitAll()
+                .antMatchers("/api/login**").permitAll()
+                .antMatchers("/api/users").hasAuthority("admin")
+                .anyRequest().permitAll()
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                .and()
+                .addFilterAt(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .formLogin()
+                .loginProcessingUrl("/api/login")
+                .loginPage("/api/login")
+                .and()
+                .addFilter(new JwtAuthFilter(authenticationManager(), super.userDetailsService(), jwtSecret));
     }
 
     @Bean
     public JsonObjectAuthenticationFilter authenticationFilter() throws Exception {
         JsonObjectAuthenticationFilter filter = new JsonObjectAuthenticationFilter();
-        filter.setAuthenticationSuccessHandler(new RestAuthSuccessHandler(userRepo, this.expirationTime, this.jwtSecret)); // 1
+        filter.setAuthenticationSuccessHandler(
+                new RestAuthSuccessHandler(this.userRepo, this.expirationTime, this.jwtSecret)); // 1
         filter.setAuthenticationFailureHandler(new RestAuthFailrueHandler()); // 2
         filter.setAuthenticationManager(super.authenticationManager()); // 3
         return filter;
@@ -118,23 +120,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override // Authentication
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(this.passwordEncoder());
-   }
+    }
 
-   @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
-   @Override
-   public AuthenticationManager authenticationManagerBean() throws Exception {
-       return super.authenticationManagerBean();
-   }
+    @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
-     @Bean
-  CorsConfigurationSource corsConfigurationSource() 
-  {
-    CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:3000", "http://127.0.0.1:8080", "http://localhost:8080"));
-    configuration.setAllowedMethods(Arrays.asList("GET","POST"));
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
-    return source;
-  }
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(
+                Arrays.asList("http://127.0.0.1:3000", "http://127.0.0.1:8080", "http://localhost:8080"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
 }
