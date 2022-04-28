@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "ACTIVITY_DICTIONARY")
-public class ActvityDictionary {
+public class ActivityDictionary {
 
     @Id
     private String activityType;
