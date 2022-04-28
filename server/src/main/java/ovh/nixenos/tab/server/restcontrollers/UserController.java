@@ -36,21 +36,23 @@ import ovh.nixenos.tab.server.users.User;
 @RequestMapping("/api/users")
 public class UserController {
 
-  @Autowired private UserService userService;
+  @Autowired
+  private UserService userService;
 
-  @Autowired PasswordEncoder passwordEncoder;
+  @Autowired
+  PasswordEncoder passwordEncoder;
 
   @GetMapping()
   public ArrayList<UserDTOOutput> getAllUsers() {
-    Iterable <User> listOfUsers = this.userService.findAll();
-    ArrayList <UserDTOOutput> resultListOFUsers = new ArrayList<>();
+    Iterable<User> listOfUsers = this.userService.findAll();
+    ArrayList<UserDTOOutput> resultListOFUsers = new ArrayList<>();
     for (User user : listOfUsers) {
       resultListOFUsers.add(new UserDTOOutput(user));
     }
     return resultListOFUsers;
   }
 
-  @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
+  @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE })
   public UserDTOOutput createNewUser(@RequestBody UserDTOInput newUser) {
     String tempPass = newUser.getPassword();
     newUser.setPassword(passwordEncoder.encode(tempPass));
@@ -60,15 +62,14 @@ public class UserController {
     return output;
   }
 
-  @GetMapping(value="{id}")
+  @GetMapping(value = "{id}")
   public UserDTOOutput getUserById(@PathVariable Integer id) {
     User user = userService.findById(id);
     if (user != null) {
       return new UserDTOOutput(user);
     }
     throw new ResponseStatusException(
-      HttpStatus.NOT_FOUND, "Entity not found"
-    );
+        HttpStatus.NOT_FOUND, "Entity not found");
   }
 
 }
