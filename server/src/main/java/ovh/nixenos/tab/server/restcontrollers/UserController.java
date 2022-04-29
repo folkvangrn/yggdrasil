@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.google.gson.*;
 
 import org.hibernate.annotations.NotFound;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +33,7 @@ import ovh.nixenos.tab.server.exceptions.InvalidPasswordException;
 import ovh.nixenos.tab.server.repositories.UserRepository;
 import ovh.nixenos.tab.server.services.UserService;
 import ovh.nixenos.tab.server.users.User;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/api/users")
@@ -42,12 +45,15 @@ public class UserController {
   @Autowired
   PasswordEncoder passwordEncoder;
 
+  @Autowired
+  private ModelMapper modelMapper;
+
   @GetMapping()
   public ArrayList<UserDTOOutput> getAllUsers() {
     Iterable<User> listOfUsers = this.userService.findAll();
     ArrayList<UserDTOOutput> resultListOFUsers = new ArrayList<>();
     for (User user : listOfUsers) {
-      resultListOFUsers.add(new UserDTOOutput(user));
+      resultListOFUsers.add(this.modelMapper.map(user, UserDTOOutput.class));
     }
     return resultListOFUsers;
   }
@@ -56,9 +62,10 @@ public class UserController {
   public UserDTOOutput createNewUser(@RequestBody UserDTOInput newUser) {
     String tempPass = newUser.getPassword();
     newUser.setPassword(passwordEncoder.encode(tempPass));
-    User user = new User(newUser);
+    User user = this.modelMapper.map(newUser, User.class);
+    user.activateAccount();
     this.userService.save(user);
-    UserDTOOutput output = new UserDTOOutput(user);
+    UserDTOOutput output = this.modelMapper.map(user, UserDTOOutput.class);
     return output;
   }
 
@@ -66,10 +73,42 @@ public class UserController {
   public UserDTOOutput getUserById(@PathVariable Integer id) {
     User user = userService.findById(id);
     if (user != null) {
-      return new UserDTOOutput(user);
+      return this.modelMapper.map(user, UserDTOOutput.class);
     }
     throw new ResponseStatusException(
         HttpStatus.NOT_FOUND, "Entity not found");
+  }
+
+  @PutMapping(value = "{id}")
+  public UserDTOOutput updateUserById(@PathVariable Integer id, @RequestBody UserDTOInput entity) {
+    User user = userService.findById(id);
+    try {
+      user.setFirstName(entity.getFirstName());
+      user.setLastName(entity.getLastName());
+      user.setRole(entity.getRole());
+      if (entity.getActive()) {
+        user.activateAccount();
+      } else {
+        user.suspendAccount();
+      }
+      if (entity.getPassword() != null) {
+        if (user.getPassword() != entity.getPassword()) {
+          if (!entity.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(entity.getPassword()));
+          }
+        }
+      }
+    } catch (InvalidArgumentException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid data provoded");
+    }
+    userService.save(user);
+    return modelMapper.map(user, UserDTOOutput.class);
+  }
+
+  @DeleteMapping(value = "{id}")
+  public String deleteUserById(@PathVariable Integer id) {
+    userService.deleteById(id);
+    return "{\"status\" : \"success\"}";
   }
 
 }

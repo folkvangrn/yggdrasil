@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import org.apache.catalina.mapper.Mapper;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -32,13 +33,17 @@ public class RestAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
   @Value("${jwt.secret-string}")
   private String jwtSecret;// = "SuPeRsEcReTsTrInG";
 
+  @Autowired
+  ModelMapper modelMapper;
+
   private UserRepository userRepo;
 
-  RestAuthSuccessHandler(UserRepository userRepo, Integer expirationTime, String jwtSecret) {
+  RestAuthSuccessHandler(UserRepository userRepo, Integer expirationTime, String jwtSecret, ModelMapper modelMapper) {
     super();
     this.userRepo = userRepo;
     this.jwtSecret = jwtSecret;
     this.expirationTime = expirationTime;
+    this.modelMapper = modelMapper;
   }
 
   @Override
@@ -51,7 +56,7 @@ public class RestAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
         .withExpiresAt(new Date(System.currentTimeMillis() + expirationTime)) // 4
         .sign(Algorithm.HMAC512(jwtSecret.getBytes("UTF-8"))); // 5
     User temporaryUser = userRepo.findByUsername(principal.getUsername());
-    UserDTOOutput userDTO = new UserDTOOutput(temporaryUser);
+    UserDTOOutput userDTO = modelMapper.map(temporaryUser, UserDTOOutput.class);
     ObjectMapper objectMapper = new ObjectMapper();
     String result = objectMapper.writeValueAsString(userDTO);
     response.addHeader("Content-Type", "application/json");

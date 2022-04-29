@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -58,11 +59,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserRepository userRepo;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     CustomUserDetailsService userService;
 
     private Integer expirationTime;
     private String jwtSecret;
-
 
     public SecurityConfiguration(CustomUserDetailsService userService,
             @Value("${jwt.expiration-time}") Integer expirationTime, @Value("${jwt.secret-string}") String jwtSecret) {
@@ -106,7 +109,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public JsonObjectAuthenticationFilter authenticationFilter() throws Exception {
         JsonObjectAuthenticationFilter filter = new JsonObjectAuthenticationFilter();
         filter.setAuthenticationSuccessHandler(
-                new RestAuthSuccessHandler(this.userRepo, this.expirationTime, this.jwtSecret)); // 1
+                new RestAuthSuccessHandler(this.userRepo, this.expirationTime, this.jwtSecret, this.modelMapper)); // 1
         filter.setAuthenticationFailureHandler(new RestAuthFailrueHandler()); // 2
         filter.setAuthenticationManager(super.authenticationManager()); // 3
         return filter;

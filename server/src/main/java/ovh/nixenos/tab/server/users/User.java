@@ -159,7 +159,7 @@ public class User {
    * setter method for username; throws InvalidArgumentException on null or
    * empty argument
    */
-  private void setUsername(String username) throws InvalidArgumentException {
+  public void setUsername(String username) throws InvalidArgumentException {
     if (username == null) {
       throw new InvalidArgumentException("Username cannot be null");
     }
@@ -173,7 +173,7 @@ public class User {
    * setter method for user's first name; throws InvalidArgumentException on
    * null or empty argument
    */
-  private void setFirstName(String firstName) throws InvalidArgumentException {
+  public void setFirstName(String firstName) throws InvalidArgumentException {
     if (firstName == null) {
       throw new InvalidArgumentException("User's name cannot be null");
     }
@@ -187,7 +187,7 @@ public class User {
    * setter method for user's last name; throws InvalidArgumentException on null
    * or empty argument
    */
-  private void setLastName(String lastName) throws InvalidArgumentException {
+  public void setLastName(String lastName) throws InvalidArgumentException {
     if (lastName == null) {
       throw new InvalidArgumentException("User's last anme cannot be null");
     }
@@ -222,7 +222,7 @@ public class User {
   /**
    * setter method for user's role; throws InvalidArgumentException
    */
-  private void setRole(String role) throws InvalidArgumentException {
+  public void setRole(String role) throws InvalidArgumentException {
     ArrayList<String> possible_roles = new ArrayList<String>(Arrays.asList("admin", "manager", "worker"));
     if (role == null) {
       throw new InvalidArgumentException("Role cannot be set to null");

@@ -3,7 +3,7 @@ package ovh.nixenos.tab.server.dto.user;
 import ovh.nixenos.tab.server.users.User;
 
 public class UserDTOInput {
-    
+
   private Integer id;
 
   /*
@@ -28,9 +28,9 @@ public class UserDTOInput {
 
   /*
    * user's role in the system:
-   *    - admin
-   *    - manager
-   *    - worker
+   * - admin
+   * - manager
+   * - worker
    */
   private String role;
 
@@ -38,93 +38,65 @@ public class UserDTOInput {
    * is this user's account active
    *
    * Checked as deletion of records in database is forbidden
-   * */
+   */
   private Boolean active;
 
-public UserDTOInput(Integer id, String username, String password, String firstName, String lastName, String role,
-        Boolean active) {
+  public UserDTOInput() {
+  }
+
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
     this.id = id;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
     this.username = username;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
     this.password = password;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
     this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
     this.lastName = lastName;
+  }
+
+  public String getRole() {
+    return role;
+  }
+
+  public void setRole(String role) {
     this.role = role;
+  }
+
+  public Boolean getActive() {
+    return active;
+  }
+
+  public void setActive(Boolean active) {
     this.active = active;
-}
-
-public UserDTOInput(UserDTOOutput user) {
-  this.id = user.getId();
-  this.username = user.getUsername();
-  this.password = "REDACTED";
-  this.firstName = user.getFirstName();
-  this.lastName = user.getLastName();
-  this.role = user.getRole();
-  this.active = user.getActive();
-}
-
-public UserDTOInput(User user) {
-  this.id = user.getId();
-  this.username = user.getUsername();
-  this.password = user.getPassword();
-  this.firstName = user.getFirstName();
-  this.lastName = user.getLastName();
-  this.role = user.getRole();
-  this.active = user.isActive();
-}
-
-public Integer getId() {
-  return id;
-}
-
-public void setId(Integer id) {
-  this.id = id;
-}
-
-public String getUsername() {
-  return username;
-}
-
-public void setUsername(String username) {
-  this.username = username;
-}
-
-public String getPassword() {
-  return password;
-}
-
-public void setPassword(String password) {
-  this.password = password;
-}
-
-public String getFirstName() {
-  return firstName;
-}
-
-public void setFirstName(String firstName) {
-  this.firstName = firstName;
-}
-
-public String getLastName() {
-  return lastName;
-}
-
-public void setLastName(String lastName) {
-  this.lastName = lastName;
-}
-
-public String getRole() {
-  return role;
-}
-
-public void setRole(String role) {
-  this.role = role;
-}
-
-public Boolean getActive() {
-  return active;
-}
-
-public void setActive(Boolean active) {
-  this.active = active;
-}
+  }
 }
