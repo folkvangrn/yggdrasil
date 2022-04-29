@@ -44,7 +44,7 @@ public class Activity {
 
     @ManyToOne
     @JoinColumn(name ="activity_type", nullable = false)
-    private ActvityDictionary activityDefinition;
+    private ActivityDictionary activityDefinition;
 
     public Long getId() {
         return id;
@@ -118,11 +118,11 @@ public class Activity {
         this.worker = worker;
     }
 
-    public ActvityDictionary getActivityDefinition() {
+    public ActivityDictionary getActivityDefinition() {
         return activityDefinition;
     }
 
-    public void setActivityDefinition(ActvityDictionary activityDefinition) {
+    public void setActivityDefinition(ActivityDictionary activityDefinition) {
         this.activityDefinition = activityDefinition;
     }
 }
