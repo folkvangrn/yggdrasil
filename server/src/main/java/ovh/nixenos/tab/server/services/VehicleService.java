@@ -30,4 +30,11 @@ public class VehicleService {
     public void addVehicle(Vehicle vehicle) {
         vehicleRepository.save(vehicle);
     }
+
+    public boolean existsById(final String id){
+        if(vehicleRepository.existsById(id))
+            return true;
+        else
+            return false;
+    }
 }
