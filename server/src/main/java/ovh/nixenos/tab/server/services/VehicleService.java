@@ -12,19 +12,19 @@ public class VehicleService {
     @Autowired
     private IVehicleRepository vehicleRepository;
 
-    public Vehicle findById(Long vehicleVin){
-        Optional<Vehicle> result = vehicleRepository.findById(vehicleVin);
-        if(result.isPresent())
+    public Vehicle findByVin(Long vehicleVin) {
+        Optional<Vehicle> result = vehicleRepository.findByVin(vehicleVin);
+        if (result.isPresent())
             return result.get();
         else
             return null;
     }
 
-    public Iterable<Vehicle> findAll(){
+    public Iterable<Vehicle> findAll() {
         return vehicleRepository.findAll();
     }
 
-    public void addVehicle(VehicleDtoRequest vehicleDto){
+    public void addVehicle(VehicleDtoRequest vehicleDto) {
 
         Vehicle vehicle = new Vehicle();
         vehicle.setVin(vehicleDto.getVin());

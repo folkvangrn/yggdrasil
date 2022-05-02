@@ -14,17 +14,17 @@ public class VehicleController {
         private VehicleService vehicleService;
 
         @GetMapping
-        public Iterable<Vehicle> getAll(){
+        public Iterable<Vehicle> getAll() {
                 return this.vehicleService.findAll();
         }
 
         @GetMapping(value = "/{id}")
-        public Vehicle findById(@PathVariable Long id){
-                return this.vehicleService.findById(id);
+        public Vehicle findById(@PathVariable Long id) {
+                return this.vehicleService.findByVin(id);
         }
 
         @PostMapping
-        public void addVehicle(@RequestBody VehicleDtoRequest vehicle){
+        public void addVehicle(@RequestBody VehicleDtoRequest vehicle) {
                 this.vehicleService.addVehicle(vehicle);
         }
 }
