@@ -5,8 +5,8 @@ import ovh.nixenos.tab.server.entities.Vehicle;
 
 import java.util.Optional;
 
-public interface IVehicleRepository extends CrudRepository<Vehicle, String> {
-    Optional<Vehicle> findByVin(Long vehicleVin);
+public interface VehicleRepository extends CrudRepository<Vehicle, String> {
+    Optional<Vehicle> findByVin(String vehicleVin);
 
     Iterable<Vehicle> findAll();
 }
