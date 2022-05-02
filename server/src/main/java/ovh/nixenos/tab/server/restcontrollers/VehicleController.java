@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ovh.nixenos.tab.server.dto.vehicle.VehicleDtoRequest;
 import ovh.nixenos.tab.server.dto.vehicle.VehicleDtoResponse;
 import ovh.nixenos.tab.server.entities.Vehicle;
+import ovh.nixenos.tab.server.entities.VehicleType;
 import ovh.nixenos.tab.server.services.VehicleService;
 
 import java.util.ArrayList;
@@ -40,7 +41,6 @@ public class VehicleController {
                 return this.modelMapper.map(this.vehicleService.findByVin(vin), VehicleDtoResponse.class);
         }
 
-
         @PostMapping
         public void addVehicle(@RequestBody VehicleDtoRequest vehicleDto) {
                 Vehicle vehicle = this.modelMapper.map(vehicleDto, Vehicle.class);
@@ -49,5 +49,10 @@ public class VehicleController {
                 //vehicle.setClient(client);
 
                 this.vehicleService.addVehicle(vehicle);
+        }
+
+        @GetMapping(value = "/types")
+        public VehicleType[] getVehicleTypes(){
+                return VehicleType.values();
         }
 }
