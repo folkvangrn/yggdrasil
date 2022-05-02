@@ -36,7 +36,7 @@ public class VehicleController {
                 return vehicleList;
         }
 
-        @GetMapping(value = "/{id}")
+        @GetMapping(value = "/{vin}")
         public VehicleDtoResponse findByVin(@PathVariable String vin) {
                 return this.modelMapper.map(this.vehicleService.findByVin(vin), VehicleDtoResponse.class);
         }
