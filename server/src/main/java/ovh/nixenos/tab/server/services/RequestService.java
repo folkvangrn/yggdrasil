@@ -39,8 +39,16 @@ public class RequestService {
             return null;
     }
 
-    public List<Request> findByManagerIdAndStatus(Long id, String status) {
+    public List<Request> findByManagerIdAndStatus(Long id, Status status) {
         Optional<List<Request>> result = requestRepository.findByManagerIdAndStatus(id, status);
+        if(result.isPresent())
+            return result.get();
+        else
+            return null;
+    }
+
+    public List<Request> findByManagerId(Long id) {
+        Optional<List<Request>> result = requestRepository.findByManagerId(id);
         if(result.isPresent())
             return result.get();
         else

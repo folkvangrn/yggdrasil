@@ -32,7 +32,7 @@ public class Request {
     private Date dateFinalized;
 
     @ManyToOne()
-    @JoinColumn(name ="vehicle_licensePlate", nullable = false)
+    @JoinColumn(name ="vehicle_vin", nullable = false)
     private Vehicle vehicle;
 
     @OneToMany(mappedBy = "request")
@@ -44,10 +44,6 @@ public class Request {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getDescription() {
