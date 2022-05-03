@@ -7,6 +7,7 @@ import ovh.nixenos.tab.server.entities.Vehicle;
 import ovh.nixenos.tab.server.entities.VehicleType;
 import ovh.nixenos.tab.server.repositories.VehicleRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,7 +24,7 @@ public class VehicleService {
             return null;
     }
 
-    public Iterable<Vehicle> findAll() {
+    public List<Vehicle> findAll() {
         return vehicleRepository.findAll();
     }
 
@@ -36,5 +37,9 @@ public class VehicleService {
             return true;
         else
             return false;
+    }
+
+    public List<Vehicle> findVehiclesByClientId(Long id){
+        return this.vehicleRepository.findVehiclesByClient_Id(id);
     }
 }
