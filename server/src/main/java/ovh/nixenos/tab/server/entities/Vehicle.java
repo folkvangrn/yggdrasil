@@ -8,7 +8,7 @@ import java.util.List;
 public class Vehicle {
 
     @Id
-    private Long vin;
+    private String vin;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -21,11 +21,11 @@ public class Vehicle {
     @OneToMany(mappedBy = "vehicle")
     private List<Request> requests;
 
-    public Long getVin() {
+    public String getVin() {
         return vin;
     }
 
-    public void setVin(Long vin) {
+    public void setVin(String vin) {
         this.vin = vin;
     }
 
