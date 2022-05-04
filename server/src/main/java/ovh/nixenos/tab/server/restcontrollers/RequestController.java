@@ -1,5 +1,6 @@
 package ovh.nixenos.tab.server.restcontrollers;
 
+import org.modelmapper.MappingException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -10,6 +11,7 @@ import ovh.nixenos.tab.server.dto.request.RequestRequest;
 import ovh.nixenos.tab.server.dto.request.RequestResponse;
 import ovh.nixenos.tab.server.entities.Request;
 import ovh.nixenos.tab.server.entities.Status;
+import ovh.nixenos.tab.server.exceptions.InvalidArgumentException;
 import ovh.nixenos.tab.server.services.RequestService;
 import ovh.nixenos.tab.server.services.UserService;
 import ovh.nixenos.tab.server.services.VehicleService;
@@ -39,10 +41,16 @@ public class RequestController {
         try {
             Request request = this.modelMapper.map(requestDTO, Request.class);
             request.setDateRequest(new Date());
-            request.setVehicle(this.vehicleService.findByVin(requestDTO.getVin()));
+            //request.setVehicle(this.vehicleService.findByVin(requestDTO.getVehicleVin()));
             request.setManager(this.userService.findById(requestDTO.getManagerId()));
             requestService.save(request);
-        } catch (DataAccessException e){
+        } catch (InvalidArgumentException e){
+          throw new ResponseStatusException(
+                  HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (MappingException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, e.getCause().getMessage());
+        } catch (DataAccessException e) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e){
@@ -62,16 +70,17 @@ public class RequestController {
             } else {
                 requestsResult = requestService.findByManagerId(managerId);
             }
+            List<RequestResponse> requests = new ArrayList<>();
+            for (Request rq : requestsResult) {
+                RequestResponse requestResponse = this.modelMapper.map(rq, RequestResponse.class);
+                requests.add(requestResponse);
+            }
+            return requests;
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Provided " + status + " is not a valid request status");
         }
-        List<RequestResponse> requests = new ArrayList<>();
-        for (Request rq : requestsResult) {
-            RequestResponse requestResponse = this.modelMapper.map(rq, RequestResponse.class);
-            requests.add(requestResponse);
-        }
-        return requests;
+
     }
 
 }

@@ -7,12 +7,18 @@ public class RequestRequest {
     private String status;
 
     //vehicle
-    private String vin;
-    //client
-    private Long clientId;
+    private String vehicleVin;
 
     //manager
     private Long managerId;
+
+    public String getVehicleVin() {
+        return vehicleVin;
+    }
+
+    public void setVehicleVin(String vehicleVin) {
+        this.vehicleVin = vehicleVin;
+    }
 
     public String getDescription() {
         return description;
@@ -36,22 +42,6 @@ public class RequestRequest {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getVin() {
-        return vin;
-    }
-
-    public void setVin(String vin) {
-        this.vin = vin;
-    }
-
-    public Long getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(Long clientId) {
-        this.clientId = clientId;
     }
 
     public Long getManagerId() {
