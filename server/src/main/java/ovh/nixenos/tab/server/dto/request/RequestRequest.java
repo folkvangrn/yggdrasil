@@ -1,6 +1,6 @@
 package ovh.nixenos.tab.server.dto.request;
 
-public class CreateRequestRequest {
+public class RequestRequest {
 
     private String description;
     private String result;
@@ -12,7 +12,7 @@ public class CreateRequestRequest {
     private Long clientId;
 
     //manager
-    private int managerId;
+    private Long managerId;
 
     public String getDescription() {
         return description;
@@ -54,11 +54,11 @@ public class CreateRequestRequest {
         this.clientId = clientId;
     }
 
-    public int getManagerId() {
+    public Long getManagerId() {
         return managerId;
     }
 
-    public void setManagerId(int managerId) {
+    public void setManagerId(Long managerId) {
         this.managerId = managerId;
     }
 }

@@ -2,13 +2,12 @@ package ovh.nixenos.tab.server.restcontrollers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import ovh.nixenos.tab.server.dto.request.CreateRequestRequest;
-import ovh.nixenos.tab.server.dto.request.FindRequestResponse;
+import ovh.nixenos.tab.server.dto.request.RequestRequest;
+import ovh.nixenos.tab.server.dto.request.RequestResponse;
 import ovh.nixenos.tab.server.entities.Request;
 import ovh.nixenos.tab.server.entities.Status;
 import ovh.nixenos.tab.server.services.RequestService;
@@ -36,7 +35,7 @@ public class RequestController {
     private ModelMapper modelMapper;
 
     @PostMapping
-    public void createRequest(@RequestBody CreateRequestRequest requestDTO) {
+    public void createRequest(@RequestBody RequestRequest requestDTO) {
         try {
             Request request = this.modelMapper.map(requestDTO, Request.class);
             request.setDateRequest(new Date());
@@ -53,8 +52,8 @@ public class RequestController {
     }
 
     @GetMapping
-    public List<FindRequestResponse> findRequests(@RequestParam(value = "managerid", required = true) Long managerId,
-                                      @RequestParam(value = "status", required = false) String status) {
+    public List<RequestResponse> findRequests(@RequestParam(value = "managerid", required = true) Long managerId,
+                                              @RequestParam(value = "status", required = false) String status) {
         List<Request> requestsResult;
         try {
             if (status != null) {
@@ -67,9 +66,9 @@ public class RequestController {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Provided " + status + " is not a valid request status");
         }
-        List<FindRequestResponse> requests = new ArrayList<>();
+        List<RequestResponse> requests = new ArrayList<>();
         for (Request rq : requestsResult) {
-            FindRequestResponse requestResponse = this.modelMapper.map(rq, FindRequestResponse.class);
+            RequestResponse requestResponse = this.modelMapper.map(rq, RequestResponse.class);
             requests.add(requestResponse);
         }
         return requests;

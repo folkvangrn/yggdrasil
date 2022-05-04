@@ -2,7 +2,7 @@ package ovh.nixenos.tab.server.dto.request;
 
 import java.util.Date;
 
-public class FindRequestResponse {
+public class RequestResponse {
 
     private Long id;
     private String description;
