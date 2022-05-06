@@ -2,6 +2,8 @@ package ovh.nixenos.tab.server.entities;
 
 import javax.persistence.*;
 import java.util.Date;
+
+import ovh.nixenos.tab.server.exceptions.InvalidArgumentException;
 import ovh.nixenos.tab.server.users.User;
 
 @Entity
@@ -33,7 +35,7 @@ public class Activity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateClosed;
 
-    @ManyToOne
+    @ManyToOne// ? (cascade = CascadeType.ALL)
     @JoinColumn(name ="request_id", nullable = false)
     private Request request;
 
@@ -50,15 +52,17 @@ public class Activity {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Long getSequenceNumber() {
         return sequenceNumber;
     }
 
-    public void setSequenceNumber(Long sequenceNumber) {
+    public void setSequenceNumber(Long sequenceNumber) throws InvalidArgumentException {
+        if (sequenceNumber == null) {
+            throw new InvalidArgumentException("Sequnce number cannot be null");
+        }
+        if (sequenceNumber <= 0) {
+            throw new InvalidArgumentException("Sequnce number has to be greater than 0");
+        }
         this.sequenceNumber = sequenceNumber;
     }
 
@@ -66,7 +70,13 @@ public class Activity {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(String description) throws InvalidArgumentException {
+        if (description == null) {
+            throw new InvalidArgumentException("Description cannot be null");
+        }
+        if ((description.isBlank())) {
+            throw new InvalidArgumentException("Description cannot be blank");
+        }
         this.description = description;
     }
 
@@ -74,7 +84,13 @@ public class Activity {
         return result;
     }
 
-    public void setResult(String result) {
+    public void setResult(String result) throws InvalidArgumentException {
+        if (result == null) {
+            throw new InvalidArgumentException("Result cannot be null");
+        }
+        if ((result.isBlank())) {
+            throw new InvalidArgumentException("Result cannot be blank");
+        }
         this.result = result;
     }
 
@@ -82,7 +98,10 @@ public class Activity {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(Status status) throws InvalidArgumentException {
+        if( status == null) {
+            throw new InvalidArgumentException("Status enum cannot be null");
+        }
         this.status = status;
     }
 
@@ -90,7 +109,10 @@ public class Activity {
         return dateRequested;
     }
 
-    public void setDateRequested(Date dateRequested) {
+    public void setDateRequested(Date dateRequested) throws InvalidArgumentException {
+        if( dateRequested == null) {
+            throw new InvalidArgumentException("Date cannot be null");
+        }
         this.dateRequested = dateRequested;
     }
 
@@ -98,7 +120,10 @@ public class Activity {
         return dateClosed;
     }
 
-    public void setDateClosed(Date dateClosed) {
+    public void setDateClosed(Date dateClosed) throws InvalidArgumentException {
+        if( dateClosed == null) {
+            throw new InvalidArgumentException("Date cannot be null");
+        }
         this.dateClosed = dateClosed;
     }
 
@@ -106,7 +131,10 @@ public class Activity {
         return request;
     }
 
-    public void setRequest(Request request) {
+    public void setRequest(Request request) throws InvalidArgumentException {
+        if( request == null) {
+            throw new InvalidArgumentException("Request cannot be null");
+        }
         this.request = request;
     }
 
@@ -114,7 +142,10 @@ public class Activity {
         return worker;
     }
 
-    public void setWorker(User worker) {
+    public void setWorker(User worker) throws InvalidArgumentException {
+        if( worker == null) {
+            throw new InvalidArgumentException("Worker cannot be null");
+        }
         this.worker = worker;
     }
 
@@ -122,7 +153,10 @@ public class Activity {
         return activityDefinition;
     }
 
-    public void setActivityDefinition(ActivityDictionary activityDefinition) {
+    public void setActivityDefinition(ActivityDictionary activityDefinition) throws InvalidArgumentException {
+        if( activityDefinition == null) {
+            throw new InvalidArgumentException("Activity Dictionary cannot be null");
+        }
         this.activityDefinition = activityDefinition;
     }
 }
