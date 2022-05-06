@@ -14,5 +14,3 @@ For development purposes postgresql database is needed to be accessible on host 
  - add new user with full access to that database, with password tabprojekt and username tabprojekt
  - make sure postgres is running on port 5432
  - all above things can be configured via application.properties file 
-
-Swagger is avaible after running application under url: http://localhost:8080/swagger-ui/index.html
