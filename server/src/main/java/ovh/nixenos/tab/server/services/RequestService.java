@@ -55,6 +55,13 @@ public class RequestService {
             return null;
     }
 
+    public boolean existsById(Long id){
+        if(requestRepository.existsById(id))
+            return true;
+        else
+            return false;
+    }
+
     public void save(final Request request){
         requestRepository.save(request);
     }

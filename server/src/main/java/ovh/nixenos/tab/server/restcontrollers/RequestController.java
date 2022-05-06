@@ -41,7 +41,7 @@ public class RequestController {
         try {
             Request request = this.modelMapper.map(requestDTO, Request.class);
             request.setDateRequest(new Date());
-            //request.setVehicle(this.vehicleService.findByVin(requestDTO.getVehicleVin()));
+            request.setStatus(Status.OPEN);
             request.setManager(this.userService.findById(requestDTO.getManagerId()));
             requestService.save(request);
         } catch (InvalidArgumentException e){
@@ -81,6 +81,56 @@ public class RequestController {
                     HttpStatus.BAD_REQUEST, "Provided " + status + " is not a valid request status");
         }
 
+    }
+
+    @PutMapping(value = "/{id}")
+    public void updateRequest(@RequestBody RequestRequest updatedRequest,@PathVariable Long id) {
+        if(this.requestService.existsById(id)) {
+            Request request = this.requestService.findById(id);
+            if (request.getStatus() == Status.CANCELED || request.getStatus() == Status.FINISH)
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request with id " + id + " is " + request.getStatus() + " and cannot be modified");
+            try {
+                if(Status.valueOf(updatedRequest.getStatus()) == Status.CANCELED ||
+                        Status.valueOf(updatedRequest.getStatus()) == Status.FINISH)
+                    request.setDateFinalized(new Date());
+
+                request.setDescription(updatedRequest.getDescription());
+                request.setResult(updatedRequest.getResult());
+                request.setStatus(Status.valueOf(updatedRequest.getStatus()));
+                request.setVehicle(this.vehicleService.findByVin(updatedRequest.getVehicleVin()));
+                request.setManager(this.userService.findById(updatedRequest.getManagerId()));
+                requestService.save(request);
+                } catch (InvalidArgumentException e) {
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST, e.getMessage());
+                } catch (MappingException e) {
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST, e.getCause().getMessage());
+                } catch (DataAccessException e) {
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST, e.getMessage());
+                } catch (IllegalArgumentException e) {
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST, "Provided " + updatedRequest.getStatus() + " is not a valid request status");
+                } catch (Exception e){
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST, "Error while updating request");
+                }
+        }
+        else {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Request with id " + id + " doesn't exist");
+        }
+    }
+
+    @GetMapping(value = "/{id}")
+    public RequestResponse getRequestById(@PathVariable Long id){
+        if(this.requestService.existsById(id)){
+            return this.modelMapper.map(this.requestService.findById(id), RequestResponse.class);
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Request with id " + id + " doesn't exist");
+        }
     }
 
 }
