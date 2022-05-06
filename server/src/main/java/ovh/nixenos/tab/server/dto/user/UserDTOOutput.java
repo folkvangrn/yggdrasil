@@ -1,10 +1,8 @@
 package ovh.nixenos.tab.server.dto.user;
 
-import ovh.nixenos.tab.server.users.User;
-
 public class UserDTOOutput {
 
-    private Integer id;
+    private Long id;
 
     /*
      * username of the user
@@ -39,11 +37,11 @@ public class UserDTOOutput {
     public UserDTOOutput() {
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

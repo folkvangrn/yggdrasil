@@ -70,7 +70,7 @@ public class UserController {
   }
 
   @GetMapping(value = "{id}")
-  public UserDTOOutput getUserById(@PathVariable Integer id) {
+  public UserDTOOutput getUserById(@PathVariable Long id) {
     User user = userService.findById(id);
     if (user != null) {
       return this.modelMapper.map(user, UserDTOOutput.class);
@@ -80,7 +80,7 @@ public class UserController {
   }
 
   @PutMapping(value = "{id}")
-  public UserDTOOutput updateUserById(@PathVariable Integer id, @RequestBody UserDTOInput entity) {
+  public UserDTOOutput updateUserById(@PathVariable Long id, @RequestBody UserDTOInput entity) {
     User user = userService.findById(id);
     try {
       user.setFirstName(entity.getFirstName());

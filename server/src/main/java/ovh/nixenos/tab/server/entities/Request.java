@@ -3,6 +3,8 @@ package ovh.nixenos.tab.server.entities;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+
+import ovh.nixenos.tab.server.exceptions.InvalidArgumentException;
 import ovh.nixenos.tab.server.users.User;
 
 @Entity
@@ -32,7 +34,7 @@ public class Request {
     private Date dateFinalized;
 
     @ManyToOne()
-    @JoinColumn(name ="vehicle_licensePlate", nullable = false)
+    @JoinColumn(name ="vehicle_vin", nullable = false)
     private Vehicle vehicle;
 
     @OneToMany(mappedBy = "request")
@@ -46,15 +48,15 @@ public class Request {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(String description) throws InvalidArgumentException {
+        if (description == null)
+            throw new InvalidArgumentException("Description cannot be null");
+        if (description.isBlank())
+            throw new InvalidArgumentException("Description cannot be empty");
         this.description = description;
     }
 
@@ -62,7 +64,7 @@ public class Request {
         return result;
     }
 
-    public void setResult(String result) {
+    public void setResult(String result) throws InvalidArgumentException {
         this.result = result;
     }
 
@@ -78,7 +80,9 @@ public class Request {
         return dateRequest;
     }
 
-    public void setDateRequest(Date dateRequest) {
+    public void setDateRequest(Date dateRequest) throws InvalidArgumentException {
+        if(dateRequest.equals(null))
+            throw new InvalidArgumentException("Date cannot be null");
         this.dateRequest = dateRequest;
     }
 
@@ -86,7 +90,9 @@ public class Request {
         return dateFinalized;
     }
 
-    public void setDateFinalized(Date dateFinalized) {
+    public void setDateFinalized(Date dateFinalized) throws InvalidArgumentException {
+        if(dateFinalized.before(new Date()))
+            throw new InvalidArgumentException("Date finalized has to be in past");
         this.dateFinalized = dateFinalized;
     }
 
@@ -94,7 +100,9 @@ public class Request {
         return vehicle;
     }
 
-    public void setVehicle(Vehicle vehicle) {
+    public void setVehicle(Vehicle vehicle) throws InvalidArgumentException {
+        if(vehicle.equals(null))
+            throw new InvalidArgumentException("Vehicle cannot be null");
         this.vehicle = vehicle;
     }
 
@@ -102,7 +110,9 @@ public class Request {
         return activities;
     }
 
-    public void setActivities(List<Activity> activities) {
+    public void setActivities(List<Activity> activities) throws InvalidArgumentException {
+        if(activities.isEmpty())
+            throw new InvalidArgumentException("Activities list cannot be null");
         this.activities = activities;
     }
 
@@ -110,7 +120,9 @@ public class Request {
         return manager;
     }
 
-    public void setManager(User manager) {
+    public void setManager(User manager) throws InvalidArgumentException {
+        if(manager.equals(null))
+            throw new InvalidArgumentException("Manager cannot be null");
         this.manager = manager;
     }
 }
