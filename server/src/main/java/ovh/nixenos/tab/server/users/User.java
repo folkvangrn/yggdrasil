@@ -1,8 +1,5 @@
 package ovh.nixenos.tab.server.users;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,20 +10,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
 import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
 
-import org.hibernate.type.TrueFalseType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.OneToMany;
-import ovh.nixenos.tab.server.exceptions.ConstructorCreationException;
+
 import ovh.nixenos.tab.server.exceptions.InvalidArgumentException;
 import ovh.nixenos.tab.server.exceptions.InvalidPasswordException;
 import ovh.nixenos.tab.server.dto.user.UserDTOInput;
@@ -48,7 +39,7 @@ public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private Integer id;
+  private Long id;
 
   /*
    * username of the user
@@ -376,7 +367,7 @@ public class User {
     return this.password;
   }
 
-  public Integer getId() {
+  public Long getId() {
     return this.id;
   }
 

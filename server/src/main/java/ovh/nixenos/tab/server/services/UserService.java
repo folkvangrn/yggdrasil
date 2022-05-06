@@ -21,7 +21,7 @@ public class UserService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    public User findById(final int id) {
+    public User findById(final Long id) {
         User result = userRepository.findById(id);
         return result;
     }
