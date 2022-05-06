@@ -1,6 +1,6 @@
 package ovh.nixenos.tab.server.dto.vehicle;
 
-public class VehicleDtoResponse {
+public class VehicleResponse {
     private String vin;
     private String vehicleClass;
     private Long clientId;

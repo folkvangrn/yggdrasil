@@ -2,7 +2,7 @@ package ovh.nixenos.tab.server.dto.vehicle;
 
 import ovh.nixenos.tab.server.entities.VehicleType;
 
-public class VehicleDtoRequest {
+public class VehicleRequest {
     private String vin;
     private VehicleType vehicleClass;
     private Long clientId;
