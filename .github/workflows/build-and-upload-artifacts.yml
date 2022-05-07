@@ -6,8 +6,18 @@ on:
       - devops
 
 jobs:
-  build:
+  hack:
     runs-on: ubuntu-latest
+    outputs:
+      environment_name: ${{ steps.get_environment.outputs.environment_name }}
+    steps:
+      - id: get_environment
+        run: echo "::set-output name=environment-name::$(echo ${GITHUB_REF#refs/heads/})"
+  build:
+    needs: [hack]
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ needs.hack.output.environment_name }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Java
@@ -25,7 +35,7 @@ jobs:
           name: Backend JAR file
           path: server/artifacts/*.jar
       - name: Make docker image
-        run: cd server && echo $TOKEN | docker login -u nixen --password-stdin && TAG_NAME="${TAG-NAME}" make build-docker && TAG_NAME="${TAG-NAME}" make publish-docker
+        run: cd server && docker login -u nixen -p $TOKEN && TAG_NAME="${TAG-NAME}" make build-docker && TAG_NAME="${TAG-NAME}" make publish-docker
         env:
           TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
           TAG-NAME: ${{ secrets.TAG_NAME }}
