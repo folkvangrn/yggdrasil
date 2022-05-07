@@ -2,6 +2,8 @@ on:
   push:
     branches:
       - main
+      - development
+      - devops
 
 jobs:
   build:
@@ -22,3 +24,8 @@ jobs:
         with:
           name: Backend JAR file
           path: server/artifacts/*.jar
+      - name: Make docker image
+        run: cd server && docker login -u nixen -p "${TOKEN}" && TAG_NAME="${TAG-NAME}" make build-docker && TAG_NAME="${TAG-NAME}" make publish-docker
+        env:
+          TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+          TAG-NAME: ${{ secrets.TAG_NAME }}

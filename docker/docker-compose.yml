@@ -12,7 +12,7 @@ services:
       - 6543:5432
   
   backend:
-    image: nixen/yggdrasil:0.1
+    image: nixen/yggdrasil:latest
     restart: always
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/tabprojekt

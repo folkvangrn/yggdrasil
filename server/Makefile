@@ -1,13 +1,15 @@
+TAG = ${TAG_NAME}
+
 build:
-	./mvnw clean package
+	./mvnw -Dmaven.test.skip -DskipTests clean package
 
 build-docker:
-	./mvnw clean package
-	docker build -t yggdrasil:0.1 --label yggdrasil .
+	./mvnw -Dmaven.test.skip -DskipTests clean package
+	docker build -t yggdrasil:${TAG} --label yggdrasil .
 
 publish-docker:
-	docker image tag yggdrasil:0.1 docker.io/nixen/yggdrasil:0.1
-	docker push nixen/yggdrasil:0.1
+	docker image tag yggdrasil:${TAG} docker.io/nixen/yggdrasil:${TAG}
+	docker push nixen/yggdrasil:${TAG}
 
 run:
 	java -jar target/server-0.0.1-SNAPSHOT.jar
