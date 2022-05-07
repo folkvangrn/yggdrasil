@@ -3,8 +3,10 @@ package ovh.nixenos.tab.server.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ovh.nixenos.tab.server.entities.Activity;
+import ovh.nixenos.tab.server.entities.Status;
 import ovh.nixenos.tab.server.repositories.ActivityRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,6 +33,14 @@ public class ActivityService {
 
     public boolean existsById(final Long id){
         return this.activityRepository.existsById(id);
+    }
+
+    public List<Activity> findByWorkerIdAndStatus(final Long id, final Status status){
+        return this.activityRepository.findByWorkerIdAndStatus(id,status);
+    }
+
+    public List<Activity> findByWorkerId(final Long id){
+        return this.activityRepository.findByWorkerId(id);
     }
 
     /*
