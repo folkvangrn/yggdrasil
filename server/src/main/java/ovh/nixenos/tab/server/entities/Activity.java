@@ -144,7 +144,7 @@ public class Activity {
 
     public void setWorker(User worker) throws InvalidArgumentException {
         if( worker == null) {
-            throw new InvalidArgumentException("Worker cannot be null");
+            throw new InvalidArgumentException("Worker cannot be null (probably wrong id)");
         }
         this.worker = worker;
     }
