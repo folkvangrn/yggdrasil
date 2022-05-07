@@ -13,8 +13,6 @@ public class ActivityRequest {
     private Long userId;
 
     private String activityDictionaryActivityType;
-    private String activityDictionaryActivityName;
-    private int activityDictionaryEstimatedDuration;
 
     public Long getSequenceNumber() {
         return sequenceNumber;
@@ -72,19 +70,4 @@ public class ActivityRequest {
         this.activityDictionaryActivityType = activityDictionaryActivityType;
     }
 
-    public String getActivityDictionaryActivityName() {
-        return activityDictionaryActivityName;
-    }
-
-    public void setActivityDictionaryActivityName(String activityDictionaryActivityName) {
-        this.activityDictionaryActivityName = activityDictionaryActivityName;
-    }
-
-    public int getActivityDictionaryEstimatedDuration() {
-        return activityDictionaryEstimatedDuration;
-    }
-
-    public void setActivityDictionaryEstimatedDuration(int activityDictionaryEstimatedDuration) {
-        this.activityDictionaryEstimatedDuration = activityDictionaryEstimatedDuration;
-    }
 }

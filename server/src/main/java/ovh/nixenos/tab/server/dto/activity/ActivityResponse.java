@@ -17,8 +17,8 @@ public class ActivityResponse {
     private Long requestId;
     // maybe we need more informations from request?
 
-    private Long userId;
-    private String userUsername;
+    private Long workerId;
+    private String workerUsername;
 
     private String activityDictionaryActivityType;
     private String activityDictionaryActivityName;
@@ -88,20 +88,20 @@ public class ActivityResponse {
         this.requestId = requestId;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getWorkerId() {
+        return workerId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setWorkerId(Long workerId) {
+        this.workerId = workerId;
     }
 
-    public String getUserUsername() {
-        return userUsername;
+    public String getWorkerUsername() {
+        return workerUsername;
     }
 
-    public void setUserUsername(String userUsername) {
-        this.userUsername = userUsername;
+    public void setWorkerUsername(String workerUsername) {
+        this.workerUsername = workerUsername;
     }
 
     public String getActivityDictionaryActivityType() {
