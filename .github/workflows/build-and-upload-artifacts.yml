@@ -18,7 +18,7 @@ jobs:
   build:
     needs: [hack]
     runs-on: ubuntu-latest
-    environment: ${{ needs.hack.output.environment_name }}
+    environment: ${{ needs.hack.outputs.environment_name }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Java
