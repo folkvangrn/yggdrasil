@@ -105,10 +105,12 @@ public class UserController {
     return modelMapper.map(user, UserDTOOutput.class);
   }
 
+  /*
   @DeleteMapping(value = "{id}")
   public String deleteUserById(@PathVariable Integer id) {
     userService.deleteById(id);
     return "{\"status\" : \"success\"}";
   }
+  */
 
 }
