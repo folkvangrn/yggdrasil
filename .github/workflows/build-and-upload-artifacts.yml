@@ -2,10 +2,23 @@ on:
   push:
     branches:
       - main
+      - development
+      - devops
+
+concurrency: ${{ github.ref }}
 
 jobs:
-  build:
+  hack:
     runs-on: ubuntu-latest
+    outputs:
+      environment_name: ${{ steps.get_environment.outputs.environment_name }}
+    steps:
+      - id: get_environment
+        run: echo "::set-output name=environment_name::$(echo ${GITHUB_REF#refs/heads/})"
+  build:
+    needs: [hack]
+    runs-on: ubuntu-latest
+    environment: ${{ needs.hack.outputs.environment_name }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Java
@@ -14,7 +27,7 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
       - name: Build with Maven
-        run: cd server && ./mvnw clean package
+        run: cd server && make build
       - name: Copy artifact to main directory
         run: cd server && mkdir artifacts && cp target/*.jar artifacts
       - name: Upload artifacts
@@ -22,3 +35,8 @@ jobs:
         with:
           name: Backend JAR file
           path: server/artifacts/*.jar
+      - name: Make docker image
+        run: cd server && docker login -u nixen -p $TOKEN && make build-docker && make publish-docker
+        env:
+          TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+          TAG_NAME: ${{ secrets.TAG_NAME }}
