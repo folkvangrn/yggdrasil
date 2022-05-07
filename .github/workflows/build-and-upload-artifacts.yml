@@ -5,6 +5,8 @@ on:
       - development
       - devops
 
+concurrency: ${{ github.ref }}
+
 jobs:
   hack:
     runs-on: ubuntu-latest
@@ -16,8 +18,7 @@ jobs:
   build:
     needs: [hack]
     runs-on: ubuntu-latest
-    environment:
-      name: ${{ needs.hack.output.environment_name }}
+    environment: ${{ needs.hack.output.environment_name }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Java
@@ -35,7 +36,7 @@ jobs:
           name: Backend JAR file
           path: server/artifacts/*.jar
       - name: Make docker image
-        run: cd server && echo $TOKEN && docker login -u nixen -p $TOKEN && make build-docker && make publish-docker
+        run: cd server && echo $TAG_NAME && docker login -u nixen -p $TOKEN && make build-docker && make publish-docker
         env:
           TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
           TAG_NAME: ${{ secrets.TAG_NAME }}
