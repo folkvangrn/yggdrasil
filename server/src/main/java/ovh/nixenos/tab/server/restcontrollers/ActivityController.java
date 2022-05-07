@@ -13,9 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/activities")
 public class ActivityController {
-    private static final String TOKEN_HEADER = "Authorization";
-    private static final String TOKEN_PREFIX = "Bearer ";
-    private String secret = "SuPeRsEcReTsTrInG";
 
     @Autowired
     private ActivityService activityService;
