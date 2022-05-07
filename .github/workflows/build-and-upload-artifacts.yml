@@ -35,7 +35,7 @@ jobs:
           name: Backend JAR file
           path: server/artifacts/*.jar
       - name: Make docker image
-        run: cd server && docker login -u nixen -pp $TOKEN && make build-docker && make publish-docker
+        run: cd server $$ echo $TOKEN && docker login -u nixen -p $TOKEN && make build-docker && make publish-docker
         env:
           TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
           TAG_NAME: ${{ secrets.TAG_NAME }}
