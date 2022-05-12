@@ -2,9 +2,7 @@ package ovh.nixenos.tab.server.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ovh.nixenos.tab.server.dto.vehicle.VehicleDtoRequest;
 import ovh.nixenos.tab.server.entities.Vehicle;
-import ovh.nixenos.tab.server.entities.VehicleType;
 import ovh.nixenos.tab.server.repositories.VehicleRepository;
 
 import java.util.List;
