@@ -22,8 +22,11 @@ public class UserService {
     PasswordEncoder passwordEncoder;
 
     public User findById(final Long id) {
-        User result = userRepository.findById(id);
-        return result;
+        Optional<User> result = userRepository.findById(id);
+        if(result.isPresent())
+            return result.get();
+        else
+            return null;
     }
 
     public User findByUsername(final String username) {
@@ -47,6 +50,7 @@ public class UserService {
         }
     }
 
+    /*
     public void deleteById(int id) {
         try {
             userRepository.deleteById(id);
@@ -54,10 +58,14 @@ public class UserService {
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-    }
+    }*/
 
     public Iterable<User> findAll() {
         return userRepository.findAll();
+    }
+
+    public boolean existsById(final Long id) {
+        return this.userRepository.existsById(id);
     }
 
     @PostConstruct

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import ovh.nixenos.tab.server.entities.ActivityDictionary;
 import ovh.nixenos.tab.server.repositories.ActivityDictionaryRepository;
 
+import javax.annotation.PostConstruct;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -33,7 +34,7 @@ public class ActivityDictionaryService {
     }
 
     //TODO - There should be better way to add some basic activity types
-    @PostMapping
+    @PostConstruct
     public void populateData() {
         if(activityDictionaryRepository.count() < 1){
             activityDictionaryRepository.saveAll(
