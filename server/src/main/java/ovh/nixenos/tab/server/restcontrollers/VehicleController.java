@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/vehicle")
+@RequestMapping("/api/vehicles")
 public class VehicleController {
 
     @Autowired
