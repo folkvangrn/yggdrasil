@@ -1,9 +1,7 @@
 package ovh.nixenos.tab.server.restcontrollers;
 
-import java.util.ArrayList;
-
 import com.google.gson.*;
-
+import java.util.ArrayList;
 import org.hibernate.annotations.NotFound;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +18,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
 import ovh.nixenos.tab.server.dto.user.UserDTOInput;
 import ovh.nixenos.tab.server.dto.user.UserDTOOutput;
 import ovh.nixenos.tab.server.exceptions.InvalidArgumentException;
@@ -33,20 +31,16 @@ import ovh.nixenos.tab.server.exceptions.InvalidPasswordException;
 import ovh.nixenos.tab.server.repositories.UserRepository;
 import ovh.nixenos.tab.server.services.UserService;
 import ovh.nixenos.tab.server.users.User;
-import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
-  @Autowired
-  private UserService userService;
+  @Autowired private UserService userService;
 
-  @Autowired
-  PasswordEncoder passwordEncoder;
+  @Autowired PasswordEncoder passwordEncoder;
 
-  @Autowired
-  private ModelMapper modelMapper;
+  @Autowired private ModelMapper modelMapper;
 
   @GetMapping()
   public ArrayList<UserDTOOutput> getAllUsers() {
@@ -58,7 +52,7 @@ public class UserController {
     return resultListOFUsers;
   }
 
-  @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE })
+  @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
   public UserDTOOutput createNewUser(@RequestBody UserDTOInput newUser) {
     String tempPass = newUser.getPassword();
     newUser.setPassword(passwordEncoder.encode(tempPass));
@@ -75,17 +69,21 @@ public class UserController {
     if (user != null) {
       return this.modelMapper.map(user, UserDTOOutput.class);
     }
-    throw new ResponseStatusException(
-        HttpStatus.NOT_FOUND, "Entity not found");
+    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity not found");
   }
 
   @PutMapping(value = "{id}")
-  public UserDTOOutput updateUserById(@PathVariable Long id, @RequestBody UserDTOInput entity) {
+  public UserDTOOutput updateUserById(@PathVariable Long id,
+                                      @RequestBody UserDTOInput entity) {
     User user = userService.findById(id);
     try {
       user.setFirstName(entity.getFirstName());
       user.setLastName(entity.getLastName());
       user.setRole(entity.getRole());
+      if (!entity.getUsername().equals(user.getUsername())) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                                          "Cannot modify username!");
+      }
       if (entity.getActive()) {
         user.activateAccount();
       } else {
@@ -99,7 +97,8 @@ public class UserController {
         }
       }
     } catch (InvalidArgumentException e) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid data provoded");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                                        "Invalid data provided");
     }
     userService.save(user);
     return modelMapper.map(user, UserDTOOutput.class);
@@ -112,5 +111,4 @@ public class UserController {
     return "{\"status\" : \"success\"}";
   }
   */
-
 }
