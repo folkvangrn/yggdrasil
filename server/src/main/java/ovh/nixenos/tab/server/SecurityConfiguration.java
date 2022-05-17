@@ -90,6 +90,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login**").permitAll()
                 .antMatchers("/api/login**").permitAll()
                 .antMatchers("/api/users").hasAuthority("admin")
+                .antMatchers("/api/users/managers").hasAuthority("manager")
                 .anyRequest().permitAll()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
