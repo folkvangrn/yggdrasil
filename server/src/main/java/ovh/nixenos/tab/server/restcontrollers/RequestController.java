@@ -36,6 +36,10 @@ public class RequestController {
     @Autowired
     private ModelMapper modelMapper;
 
+    /**
+     * Endpoint that enables creating request
+     * @param requestDTO Informations about request that has to be created
+     */
     @PostMapping
     public void createRequest(@RequestBody RequestRequest requestDTO) {
         try {
@@ -59,6 +63,12 @@ public class RequestController {
         }
     }
 
+    /**
+     * Endpoint that enables retrieving informations about specified requests
+     * @param managerId Id of manager that we want to see activities
+     * @param status Status which by requests will be filtered
+     * @return Informations about all requests that match parameters
+     */
     @GetMapping
     public List<RequestResponse> findRequests(@RequestParam(value = "managerid", required = true) Long managerId,
                                               @RequestParam(value = "status", required = false) String status) {
@@ -83,6 +93,11 @@ public class RequestController {
 
     }
 
+    /**
+     * Endpoint that enables updating existing request
+     * @param id Id of request that has to be updated
+     * @param updatedRequest Informations about request that has to be updated
+     */
     @PutMapping(value = "/{id}")
     public void updateRequest(@RequestBody RequestRequest updatedRequest,@PathVariable Long id) {
         if(this.requestService.existsById(id)) {
@@ -123,6 +138,11 @@ public class RequestController {
         }
     }
 
+    /**
+     * Endpoint that enables retrieving informations about specified request
+     * @param id Id of request which will be returned
+     * @return Informations about request that match parameters
+     */
     @GetMapping(value = "/{id}")
     public RequestResponse getRequestById(@PathVariable Long id){
         if(this.requestService.existsById(id)){

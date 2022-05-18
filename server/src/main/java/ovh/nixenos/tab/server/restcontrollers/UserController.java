@@ -42,6 +42,10 @@ public class UserController {
 
   @Autowired private ModelMapper modelMapper;
 
+  /**
+   * Endpoint that enables retrieving informations about all users
+   * @return Informations about all users in database
+   */
   @GetMapping()
   public ArrayList<UserDTOOutput> getAllUsers() {
     Iterable<User> listOfUsers = this.userService.findAll();
@@ -52,6 +56,10 @@ public class UserController {
     return resultListOFUsers;
   }
 
+  /**
+   * Endpoint that enables creating user
+   * @param newUser Informations about user which has to be created
+   */
   @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
   public UserDTOOutput createNewUser(@RequestBody UserDTOInput newUser) {
     String tempPass = newUser.getPassword();
@@ -63,6 +71,11 @@ public class UserController {
     return output;
   }
 
+  /**
+   * Endpoint that enables retrieving informations about specified user
+   * @param id Id of user
+   * @return Informations about user with given id
+   */
   @GetMapping(value = "{id}")
   public UserDTOOutput getUserById(@PathVariable Long id) {
     User user = userService.findById(id);
@@ -72,6 +85,11 @@ public class UserController {
     throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity not found");
   }
 
+  /**
+   * Endpoint that enables updating existing user
+   * @param id Id of user that has to be updated
+   * @param entity Informations about user that has to be updated
+   */
   @PutMapping(value = "{id}")
   public UserDTOOutput updateUserById(@PathVariable Long id,
                                       @RequestBody UserDTOInput entity) {

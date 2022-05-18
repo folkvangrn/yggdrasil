@@ -40,6 +40,11 @@ public class ActivityController {
     @Autowired
     private ModelMapper modelMapper;
 
+    /**
+     * Endpoint that enables retrieving informations about specified activity
+     * @param id Id of activity
+     * @return Informations about activity with given id
+     */
     @GetMapping(value = "/api/activities/{id}")
     public ActivityResponse findById(@PathVariable Long id) {
         if(this.activityService.existsById(id))
@@ -49,6 +54,12 @@ public class ActivityController {
                     HttpStatus.BAD_REQUEST, "Activity with id " + id + " does not exist!");
     }
 
+    /**
+     * Endpoint that enables retrieving informations about specified activities
+     * @param workerId Id of worker that we want to see activities
+     * @param status Status which by activities will be filtered
+     * @return Informations about all activities that match parameters
+     */
     @GetMapping(value = "/api/activities")
     public List<ActivityResponse> findActivitiesByWorkerIdOrStatus(@RequestParam(value = "workerid", required = true) Long workerId,
                                                                    @RequestParam(value = "status", required = false) String status) {
@@ -77,6 +88,10 @@ public class ActivityController {
         }
     }
 
+    /**
+     * Endpoint that enables creating activity
+     * @param newActivity Informations about activity that has to be created
+     */
     @PostMapping(value = "/api/activities")
     public void createActivity(@RequestBody ActivityRequest newActivity){
         try {
@@ -103,6 +118,11 @@ public class ActivityController {
         }
     }
 
+    /**
+     * Endpoint that enables updating existing activity
+     * @param id Id of activity that has to be updated
+     * @param updatedActivity Informations about activity that has to be updated
+     */
     @PutMapping(value = "/api/activities/{id}")
     public void updateActivity(@RequestBody ActivityRequest updatedActivity,
                                @PathVariable final Long id) {
@@ -147,6 +167,11 @@ public class ActivityController {
         }
     }
 
+    /**
+     * Endpoint that enables retrieving informations about specified activities
+     * @param id Id of request which activities will be returned
+     * @return Informations about all activities that match parameters
+     */
     @GetMapping(value = "/api/requests/{id}/activities")
     public List<ActivityResponse> findActivitiesForRequest(@PathVariable Long id){
         if(this.requestService.existsById(id)){

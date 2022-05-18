@@ -25,6 +25,10 @@ public class ClientController {
     @Autowired
     ModelMapper modelMapper;
 
+    /**
+     * Endpoint that enables retrieving informations about all clients
+     * @return Informations about all clients
+     */
     @GetMapping
     List<ClientResponse> getAllClients() {
         Iterable<Client> listOfClients = this.clientService.findAll();
@@ -35,6 +39,10 @@ public class ClientController {
         return resultListOfClients;
     }
 
+    /**
+     * Endpoint that enables creating client
+     * @param newClientInput Informations about client that has to be created
+     */
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE })
     ClientResponse addNewClient(@RequestBody ClientRequest newClientInput) {
         try {
@@ -47,6 +55,11 @@ public class ClientController {
         }
     }
 
+    /**
+     * Endpoint that enables retrieving informations about specified client
+     * @param id Id of client that will be returned
+     * @return Informations about client that matches parameters
+     */
     @GetMapping(value = "{id}")
     ClientResponse getClientById(@PathVariable Long id) {
         try {
@@ -57,6 +70,11 @@ public class ClientController {
         }
     }
 
+    /**
+     * Endpoint that enables updating existing client
+     * @param id Id of client that has to be updated
+     * @param inputClient Informations about client that has to be updated
+     */
     @PutMapping(value = "{id}")
     ClientResponse updateClientById(@PathVariable Long id, @RequestBody ClientRequest inputClient) {
         try {

@@ -31,6 +31,11 @@ public class VehicleController {
     @Autowired
     private ModelMapper modelMapper;
 
+    /**
+     * Endpoint that enables retrieving informations about specified vehicle
+     * @param clientId Id of client which vehicles will be returned
+     * @return Informations about all vehicles that match parameters
+     */
     @GetMapping
     public List<VehicleResponse> getAll(
             @RequestParam(value = "clientid", required = false) Long clientId) {
@@ -47,6 +52,11 @@ public class VehicleController {
         return vehicleList;
     }
 
+    /**
+     * Endpoint that enables retrieving informations about specified vehicle
+     * @param vin Vehicle's vin
+     * @return Informations about vehicle with given vin
+     */
     @GetMapping(value = "/{vin}")
     public VehicleResponse findByVin(@PathVariable String vin) {
         if(this.vehicleService.existsById(vin))
@@ -56,6 +66,10 @@ public class VehicleController {
                     HttpStatus.BAD_REQUEST, "Vehicle with vin " + vin + " does not exist!");
     }
 
+    /**
+     * Endpoint that enables creating vehicle
+     * @param vehicleDto Informations about vehicle that has to be created
+     */
     @PostMapping
     public void addVehicle(@RequestBody VehicleRequest vehicleDto) {
         try {
@@ -75,11 +89,20 @@ public class VehicleController {
         }
     }
 
+    /**
+     * Endpoint that enables retrieving all vehicles types in database
+     * @return  Informations about all vehicles types
+     */
     @GetMapping(value = "/types")
     public VehicleType[] getVehicleTypes() {
         return VehicleType.values();
     }
 
+    /**
+     * Endpoint that enables updating existing vehicle
+     * @param vin Id of vehicle that has to be updated
+     * @param newVehicle Informations about vehicle that has to be updated
+     */
     @PutMapping(value = "/{vin}")
     public void updateVehicle(@RequestBody VehicleRequest newVehicle,
                               @PathVariable String vin){
