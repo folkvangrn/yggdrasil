@@ -3,6 +3,7 @@ package ovh.nixenos.tab.server.restcontrollers;
 import com.google.gson.*;
 import java.util.ArrayList;
 import org.hibernate.annotations.NotFound;
+import org.modelmapper.MappingException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -120,6 +121,20 @@ public class UserController {
     }
     userService.save(user);
     return modelMapper.map(user, UserDTOOutput.class);
+  }
+
+  @GetMapping(value = "/managers")
+  public ArrayList<UserDTOOutput> findManagers(){
+    Iterable<User> listOfUsers = this.userService.findAllByRole("manager");
+    ArrayList<UserDTOOutput> resultListOFUsers = new ArrayList<>();
+    try {
+      for (User user : listOfUsers)
+        resultListOFUsers.add(this.modelMapper.map(user, UserDTOOutput.class));
+    } catch (MappingException e) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, e.getCause().getMessage());
+    }
+    return resultListOFUsers;
   }
 
   /*
