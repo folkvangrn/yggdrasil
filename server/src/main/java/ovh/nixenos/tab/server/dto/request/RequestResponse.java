@@ -11,7 +11,8 @@ public class RequestResponse {
     private Date dateRequest;
     private Date dateFinalized;
     private Long managerId;
-    private String managerUsername;
+    private String managerFirstName;
+    private String managerLastName;
 
     //vehicle
     private String vehicleVin;
@@ -81,14 +82,6 @@ public class RequestResponse {
         this.vehicleClientEmail = vehicleClientEmail;
     }
 
-    public String getManagerUsername() {
-        return managerUsername;
-    }
-
-    public void setManagerUsername(String managerUsername) {
-        this.managerUsername = managerUsername;
-    }
-
     public Long getId() {
         return id;
     }
@@ -153,4 +146,19 @@ public class RequestResponse {
         this.vehicleClass = vehicleClass;
     }
 
+    public String getManagerFirstName() {
+        return managerFirstName;
+    }
+
+    public void setManagerFirstName(String managerFirstName) {
+        this.managerFirstName = managerFirstName;
+    }
+
+    public String getManagerLastName() {
+        return managerLastName;
+    }
+
+    public void setManagerLastName(String managerLastName) {
+        this.managerLastName = managerLastName;
+    }
 }
