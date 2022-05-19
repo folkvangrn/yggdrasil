@@ -155,7 +155,7 @@ public class ActivityController {
                         HttpStatus.BAD_REQUEST, e.getMessage());
             } catch (IllegalArgumentException e) {
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "Provided " + updatedActivity.getStatus() + " is not a valid request status");
+                        HttpStatus.BAD_REQUEST, "Provided " + updatedActivity.getStatus() + " is not a valid activity status");
             } catch (Exception e){
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Error while updating request");

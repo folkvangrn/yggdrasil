@@ -98,10 +98,7 @@ public class Activity {
         return status;
     }
 
-    public void setStatus(Status status) throws InvalidArgumentException {
-        if( status == null) {
-            throw new InvalidArgumentException("Status enum cannot be null");
-        }
+    public void setStatus(Status status) {
         this.status = status;
     }
 
