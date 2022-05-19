@@ -10,7 +10,7 @@ public class ActivityRequest {
 
     private Long requestId;
 
-    private Long userId;
+    private Long workerId;
 
     private String activityDictionaryActivityType;
 
@@ -54,20 +54,20 @@ public class ActivityRequest {
         this.requestId = requestId;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
     public String getActivityDictionaryActivityType() {
         return activityDictionaryActivityType;
     }
 
     public void setActivityDictionaryActivityType(String activityDictionaryActivityType) {
         this.activityDictionaryActivityType = activityDictionaryActivityType;
+    }
+
+    public Long getWorkerId() {
+        return workerId;
+    }
+
+    public void setWorkerId(Long workerId) {
+        this.workerId = workerId;
     }
 
 }

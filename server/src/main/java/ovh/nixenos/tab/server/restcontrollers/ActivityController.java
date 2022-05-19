@@ -100,7 +100,7 @@ public class ActivityController {
             activity.setDateRequested(new Date());
             activity.setStatus(Status.OPEN);
             activity.setRequest(this.requestService.findById(newActivity.getRequestId()));
-            activity.setWorker(this.userService.findById(newActivity.getUserId()));
+            activity.setWorker(this.userService.findById(newActivity.getWorkerId()));
             activity.setActivityDefinition(this.activityDictionaryService.findById(newActivity.getActivityDictionaryActivityType()));
             this.activityService.save(activity);
         } catch (InvalidArgumentException e){
@@ -141,7 +141,7 @@ public class ActivityController {
                 activity.setResult(updatedActivity.getResult());
                 activity.setStatus(Status.valueOf(updatedActivity.getStatus()));
                 activity.setRequest(this.requestService.findById(updatedActivity.getRequestId())); // same as above
-                activity.setWorker(this.userService.findById(updatedActivity.getUserId()));
+                activity.setWorker(this.userService.findById(updatedActivity.getWorkerId()));
                 activity.setActivityDefinition(this.activityDictionaryService.findById(updatedActivity.getActivityDictionaryActivityType()));
                 this.activityService.save(activity);
             } catch (InvalidArgumentException e) {
