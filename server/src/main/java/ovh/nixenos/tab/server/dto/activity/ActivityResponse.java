@@ -15,10 +15,10 @@ public class ActivityResponse {
     private Date dateClosed;
 
     private Long requestId;
-    // maybe we need more informations from request?
 
     private Long workerId;
-    private String workerUsername;
+    private String workerFirstName;
+    private String workerLastName;
 
     private String activityDictionaryActivityType;
     private String activityDictionaryActivityName;
@@ -96,12 +96,20 @@ public class ActivityResponse {
         this.workerId = workerId;
     }
 
-    public String getWorkerUsername() {
-        return workerUsername;
+    public String getWorkerFirstName() {
+        return workerFirstName;
     }
 
-    public void setWorkerUsername(String workerUsername) {
-        this.workerUsername = workerUsername;
+    public void setWorkerFirstName(String workerFirstName) {
+        this.workerFirstName = workerFirstName;
+    }
+
+    public String getWorkerLastName() {
+        return workerLastName;
+    }
+
+    public void setWorkerLastName(String workerLastName) {
+        this.workerLastName = workerLastName;
     }
 
     public String getActivityDictionaryActivityType() {

@@ -107,7 +107,7 @@ public class RequestController {
             try {
                 if(Status.valueOf(updatedRequest.getStatus()) == Status.CANCELED ||
                         Status.valueOf(updatedRequest.getStatus()) == Status.FINISH)
-                    request.setDateFinalized(new Date());
+                    request.setDateClosed(new Date());
 
                 request.setDescription(updatedRequest.getDescription());
                 request.setResult(updatedRequest.getResult());

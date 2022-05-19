@@ -9,7 +9,7 @@ public class RequestResponse {
     private String result;
     private String status;
     private Date dateRequest;
-    private Date dateFinalized;
+    private Date dateClosed;
     private Long managerId;
     private String managerFirstName;
     private String managerLastName;
@@ -122,12 +122,12 @@ public class RequestResponse {
         this.dateRequest = dateRequest;
     }
 
-    public Date getDateFinalized() {
-        return dateFinalized;
+    public Date getDateClosed() {
+        return dateClosed;
     }
 
-    public void setDateFinalized(Date dateFinalized) {
-        this.dateFinalized = dateFinalized;
+    public void setDateClosed(Date dateClosed) {
+        this.dateClosed = dateClosed;
     }
 
     public String getVehicleVin() {

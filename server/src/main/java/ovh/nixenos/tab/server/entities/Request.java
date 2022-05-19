@@ -31,7 +31,7 @@ public class Request {
 
     @Column
     @Temporal(TemporalType.TIMESTAMP)
-    private Date dateFinalized;
+    private Date dateClosed;
 
     @ManyToOne()
     @JoinColumn(name ="vehicle_vin", nullable = false)
@@ -86,14 +86,14 @@ public class Request {
         this.dateRequest = dateRequest;
     }
 
-    public Date getDateFinalized() {
-        return dateFinalized;
+    public Date getDateClosed() {
+        return dateClosed;
     }
 
-    public void setDateFinalized(Date dateFinalized) throws InvalidArgumentException {
-        if(dateFinalized.before(new Date()))
-            throw new InvalidArgumentException("Date finalized has to be in past");
-        this.dateFinalized = dateFinalized;
+    public void setDateClosed(Date dateClosed) throws InvalidArgumentException {
+        if(dateClosed.before(new Date()))
+            throw new InvalidArgumentException("Date closed has to be in past");
+        this.dateClosed = dateClosed;
     }
 
     public Vehicle getVehicle() {
