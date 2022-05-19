@@ -123,6 +123,10 @@ public class UserController {
     return modelMapper.map(user, UserDTOOutput.class);
   }
 
+  /**
+   * Endpoint that enables retrieving data about all managers in database
+   * @return List of managers
+   */
   @GetMapping(value = "/managers")
   public ArrayList<UserDTOOutput> findManagers(){
     Iterable<User> listOfUsers = this.userService.findAllByRole("manager");
@@ -133,6 +137,24 @@ public class UserController {
     } catch (MappingException e) {
         throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST, e.getCause().getMessage());
+    }
+    return resultListOFUsers;
+  }
+
+  /**
+   * Endpoint that enables retrieving data about all workers in database
+   * @return List of workers
+   */
+  @GetMapping(value = "/workers")
+  public ArrayList<UserDTOOutput> findWorkers(){
+    Iterable<User> listOfUsers = this.userService.findAllByRole("worker");
+    ArrayList<UserDTOOutput> resultListOFUsers = new ArrayList<>();
+    try {
+      for (User user : listOfUsers)
+        resultListOFUsers.add(this.modelMapper.map(user, UserDTOOutput.class));
+    } catch (MappingException e) {
+      throw new ResponseStatusException(
+              HttpStatus.BAD_REQUEST, e.getCause().getMessage());
     }
     return resultListOFUsers;
   }
