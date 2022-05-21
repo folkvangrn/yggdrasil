@@ -140,7 +140,6 @@ public class ActivityController {
                 activity.setDescription(updatedActivity.getDescription());
                 activity.setResult(updatedActivity.getResult());
                 activity.setStatus(Status.valueOf(updatedActivity.getStatus()));
-                activity.setRequest(this.requestService.findById(updatedActivity.getRequestId())); // same as above
                 activity.setWorker(this.userService.findById(updatedActivity.getWorkerId()));
                 activity.setActivityDefinition(this.activityDictionaryService.findById(updatedActivity.getActivityDictionaryActivityType()));
                 this.activityService.save(activity);
