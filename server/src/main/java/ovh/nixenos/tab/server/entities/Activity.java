@@ -84,13 +84,7 @@ public class Activity {
         return result;
     }
 
-    public void setResult(String result) throws InvalidArgumentException {
-        if (result == null) {
-            throw new InvalidArgumentException("Result cannot be null");
-        }
-        if ((result.isBlank())) {
-            throw new InvalidArgumentException("Result cannot be blank");
-        }
+    public void setResult(String result) {
         this.result = result;
     }
 
