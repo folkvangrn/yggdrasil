@@ -36,11 +36,11 @@ public class ActivityService {
     }
 
     public List<Activity> findByWorkerIdAndStatus(final Long id, final Status status){
-        return this.activityRepository.findByWorkerIdAndStatus(id,status);
+        return this.activityRepository.findByWorkerIdAndStatusOrderBySequenceNumberAsc(id,status);
     }
 
     public List<Activity> findByWorkerId(final Long id){
-        return this.activityRepository.findByWorkerId(id);
+        return this.activityRepository.findByWorkerIdOrderBySequenceNumberAsc(id);
     }
 
     /*
