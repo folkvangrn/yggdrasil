@@ -17,4 +17,6 @@ public interface ActivityRepository extends CrudRepository<Activity, Long> {
 
     List<Activity> findByWorkerIdOrderBySequenceNumberAsc(final Long id);
 
+    List<Activity> findAllByRequestIdOrderBySequenceNumberAsc(final Long id);
+
 }

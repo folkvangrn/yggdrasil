@@ -94,9 +94,22 @@ public class ActivityController {
      */
     @PostMapping(value = "/api/activities")
     public void createActivity(@RequestBody ActivityRequest newActivity){
+        //validate seq numb
+        List<Activity> allActivities = this.activityService.findAllByRequestId(newActivity.getRequestId());
+        if(newActivity.getSequenceNumber() != null && allActivities != null) {
+            Long lastSeqNum = allActivities.get(allActivities.size() - 1).getSequenceNumber();
+            if (newActivity.getSequenceNumber() <= lastSeqNum) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "New activity sequence number has to be greater than the previous: " + lastSeqNum);
+            } else if(newActivity.getSequenceNumber() != lastSeqNum+1){
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "New activity sequence number has to be: " + lastSeqNum+1);
+            }
+        }
         try {
             Activity activity = this.modelMapper.map(newActivity, Activity.class);
-            // ? should we check sequence number?
+
+            activity.setSequenceNumber(newActivity.getSequenceNumber());
             activity.setDateRequested(new Date());
             activity.setStatus(Status.OPEN);
             activity.setRequest(this.requestService.findById(newActivity.getRequestId()));
@@ -131,10 +144,34 @@ public class ActivityController {
             if(activity.getStatus() == Status.CANCELED || activity.getStatus() == Status.FINISH)
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Activity with id " + id + " has status " + activity.getStatus() + " and cannot be modified!");
+            if(!activity.getSequenceNumber().equals(updatedActivity.getSequenceNumber())) {
+                List<Activity> allActivities = this.activityService.findAllByRequestId(updatedActivity.getRequestId());
+                if(updatedActivity.getSequenceNumber() != null && allActivities != null) {
+                    Long lastSeqNum = allActivities.get(allActivities.size() - 1).getSequenceNumber();
+                    if (updatedActivity.getSequenceNumber() > lastSeqNum) {
+                        throw new ResponseStatusException(
+                                HttpStatus.BAD_REQUEST, "Last activity sequence number was " + lastSeqNum + ". If you need changes use equal/lower number");
+                    }
+                    // @TODO method than changes all seq numb
+                    //change(allActivities, updatedActivity.getSequenceNumber());
+                }
+            }
+
             try{
                 if(Status.valueOf(updatedActivity.getStatus()) == Status.CANCELED ||
                         Status.valueOf(updatedActivity.getStatus()) == Status.FINISH)
                     activity.setDateClosed(new Date());
+
+                List<Activity> allActivities = this.activityService.findAllByRequestId(updatedActivity.getRequestId());
+                if(updatedActivity.getSequenceNumber() != null && allActivities != null) {
+                    Long lastSeqNum = allActivities.get(allActivities.size() - 1).getSequenceNumber();
+                    if (lastSeqNum >= updatedActivity.getSequenceNumber()) {
+                        throw new ResponseStatusException(
+                                HttpStatus.BAD_REQUEST, "Last activity sequence number was " + lastSeqNum + ". New has to be greater!");
+                    } else {
+                        activity.setSequenceNumber(updatedActivity.getSequenceNumber());
+                    }
+                }
 
                 activity.setSequenceNumber(updatedActivity.getSequenceNumber()); // maybe it should be immutable?
                 activity.setDescription(updatedActivity.getDescription());

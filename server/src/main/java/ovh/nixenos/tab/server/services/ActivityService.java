@@ -43,6 +43,10 @@ public class ActivityService {
         return this.activityRepository.findByWorkerIdOrderBySequenceNumberAsc(id);
     }
 
+    public List<Activity> findAllByRequestId(final Long id){
+        return this.activityRepository.findAllByRequestIdOrderBySequenceNumberAsc(id);
+    }
+
     /*
     // @TO_DElETE IN FINAL VERSION
     @Autowired
