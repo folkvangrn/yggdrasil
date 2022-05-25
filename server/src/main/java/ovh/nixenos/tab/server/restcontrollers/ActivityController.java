@@ -106,6 +106,9 @@ public class ActivityController {
                         HttpStatus.BAD_REQUEST, "New activity sequence number has to be: " + lastSeqNum+1);
             }
         }
+        if(this.userService.findById(newActivity.getWorkerId()).getRole() != "worker")
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "You have to assign worker to the activity.");
         try {
             Activity activity = this.modelMapper.map(newActivity, Activity.class);
 
@@ -141,6 +144,9 @@ public class ActivityController {
                                @PathVariable final Long id) {
         if(this.activityService.existsById(id)){
             Activity activity = this.activityService.findById(id);
+            if(this.userService.findById(updatedActivity.getWorkerId()).getRole() != "worker")
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "You have to assign worker to the activity.");
             if(activity.getStatus() == Status.CANCELED || activity.getStatus() == Status.FINISH)
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Activity with id " + id + " has status " + activity.getStatus() + " and cannot be modified!");
