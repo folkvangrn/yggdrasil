@@ -136,8 +136,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(
-                Arrays.asList("http://127.0.0.1:3000", "http://127.0.0.1:8080", "http://localhost:8080"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
+                Arrays.asList("http://127.0.0.1:3000", "http://127.0.0.1:8080", "http://localhost:8080", "http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
