@@ -30,8 +30,8 @@ public class Vehicle {
     }
 
     public void setVin(String vin) throws InvalidArgumentException {
-        String regex = "^[a-zA-Z0-9]+$";
-        Matcher matcher = Pattern.compile("^[a-zA-Z0-9]+$").matcher(vin);
+        String regex = "^[A-Z]{1}[A-Z0-9]{15}[0-9]$";
+        Matcher matcher = Pattern.compile(regex).matcher(vin);
         if(!matcher.matches())
             throw new InvalidArgumentException("Invalid vin number " + vin);
         if(vin.isBlank() || vin.isEmpty())
