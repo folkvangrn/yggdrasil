@@ -101,9 +101,10 @@ public class ActivityController {
             if (newActivity.getSequenceNumber() <= lastSeqNum) {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "New activity sequence number has to be greater than the previous: " + lastSeqNum);
-            } else if(newActivity.getSequenceNumber() != lastSeqNum+1){
+            } else if(newActivity.getSequenceNumber() != lastSeqNum+1) {
+                long newNumber = lastSeqNum+1;
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "New activity sequence number has to be: " + lastSeqNum+1);
+                        HttpStatus.BAD_REQUEST, "New activity sequence number has to be: " + newNumber);
             }
         }
         if(this.userService.findById(newActivity.getWorkerId()).getRole() != "worker")
