@@ -96,7 +96,7 @@ public class ActivityController {
     public void createActivity(@RequestBody ActivityRequest newActivity){
         //validate seq numb
         List<Activity> allActivities = this.activityService.findAllByRequestId(newActivity.getRequestId());
-        if(newActivity.getSequenceNumber() != null && allActivities != null) {
+        if(newActivity.getSequenceNumber() != null && allActivities.size() > 0) {
             Long lastSeqNum = allActivities.get(allActivities.size() - 1).getSequenceNumber();
             if (newActivity.getSequenceNumber() <= lastSeqNum) {
                 throw new ResponseStatusException(
@@ -107,7 +107,7 @@ public class ActivityController {
                         HttpStatus.BAD_REQUEST, "New activity sequence number has to be: " + newNumber);
             }
         }
-        if(this.userService.findById(newActivity.getWorkerId()).getRole() != "worker")
+        if(!this.userService.findById(newActivity.getWorkerId()).getRole().equals("worker"))
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "You have to assign worker to the activity.");
         try {
@@ -145,7 +145,7 @@ public class ActivityController {
                                @PathVariable final Long id) {
         if(this.activityService.existsById(id)){
             Activity activity = this.activityService.findById(id);
-            if(this.userService.findById(updatedActivity.getWorkerId()).getRole() != "worker")
+            if(!this.userService.findById(updatedActivity.getWorkerId()).getRole().equals("worker"))
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "You have to assign worker to the activity.");
             if(activity.getStatus() == Status.CANCELED || activity.getStatus() == Status.FINISH)
@@ -157,7 +157,7 @@ public class ActivityController {
                     activity.setDateClosed(new Date());
 
                 List<Activity> allActivities = this.activityService.findAllByRequestId(updatedActivity.getRequestId());
-                if(updatedActivity.getSequenceNumber() != null && allActivities != null) {
+                if(updatedActivity.getSequenceNumber() != null && allActivities.size() >0) {
                     Long lastSeqNum = allActivities.get(allActivities.size() - 1).getSequenceNumber();
                     if (lastSeqNum >= updatedActivity.getSequenceNumber()) {
                         throw new ResponseStatusException(
