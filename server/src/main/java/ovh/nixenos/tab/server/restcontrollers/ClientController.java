@@ -2,6 +2,8 @@ package ovh.nixenos.tab.server.restcontrollers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ public class ClientController {
 
     /**
      * Endpoint that enables retrieving informations about all clients
+     * 
      * @return Informations about all clients
      */
     @GetMapping
@@ -41,11 +44,27 @@ public class ClientController {
 
     /**
      * Endpoint that enables creating client
+     * 
      * @param newClientInput Informations about client that has to be created
      */
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE })
     ClientResponse addNewClient(@RequestBody ClientRequest newClientInput) {
         try {
+            Pattern phoneRegexPattern = Pattern
+                    .compile("^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{3}$");
+            Matcher phoneNumberMatcher = phoneRegexPattern.matcher(newClientInput.getPhoneNumber());
+            if (!phoneNumberMatcher.matches()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Invalid phone number specified!");
+            }
+            // RFC 5322
+            Pattern emailRegexPattern = Pattern
+                    .compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
+            Matcher emailMatcher = emailRegexPattern.matcher(newClientInput.getEmail());
+            if (!emailMatcher.matches()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Invalid email specified!");
+            }
             Client newClient = modelMapper.map(newClientInput, Client.class);
             clientService.save(newClient);
             return modelMapper.map(newClient, ClientResponse.class);
@@ -57,6 +76,7 @@ public class ClientController {
 
     /**
      * Endpoint that enables retrieving informations about specified client
+     * 
      * @param id Id of client that will be returned
      * @return Informations about client that matches parameters
      */
@@ -72,7 +92,8 @@ public class ClientController {
 
     /**
      * Endpoint that enables updating existing client
-     * @param id Id of client that has to be updated
+     * 
+     * @param id          Id of client that has to be updated
      * @param inputClient Informations about client that has to be updated
      */
     @PutMapping(value = "{id}")
