@@ -20,7 +20,8 @@ services:
     depends_on:
       - backend
   backend:
-    image: nixen/yggdrasil:latest
+#    image: nixen/yggdrasil:latest
+    image: nixen/yggdrasil:beta-release
     restart: always
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/tabprojekt
