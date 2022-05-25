@@ -99,6 +99,21 @@ public class ClientController {
     @PutMapping(value = "{id}")
     ClientResponse updateClientById(@PathVariable Long id, @RequestBody ClientRequest inputClient) {
         try {
+            Pattern phoneRegexPattern = Pattern
+                    .compile("^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{3}$");
+            Matcher phoneNumberMatcher = phoneRegexPattern.matcher(inputClient.getPhoneNumber());
+            if (!phoneNumberMatcher.matches()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Invalid phone number specified!");
+            }
+            // RFC 5322
+            Pattern emailRegexPattern = Pattern
+                    .compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
+            Matcher emailMatcher = emailRegexPattern.matcher(inputClient.getEmail());
+            if (!emailMatcher.matches()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Invalid email specified!");
+            }
             Client client = this.clientService.findById(id);
             Client updatedClient = modelMapper.map(inputClient, Client.class);
             client.setFirstName(updatedClient.getFirstName());
