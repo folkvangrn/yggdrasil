@@ -144,19 +144,6 @@ public class ActivityController {
             if(activity.getStatus() == Status.CANCELED || activity.getStatus() == Status.FINISH)
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Activity with id " + id + " has status " + activity.getStatus() + " and cannot be modified!");
-            if(!activity.getSequenceNumber().equals(updatedActivity.getSequenceNumber())) {
-                List<Activity> allActivities = this.activityService.findAllByRequestId(updatedActivity.getRequestId());
-                if(updatedActivity.getSequenceNumber() != null && allActivities != null) {
-                    Long lastSeqNum = allActivities.get(allActivities.size() - 1).getSequenceNumber();
-                    if (updatedActivity.getSequenceNumber() > lastSeqNum) {
-                        throw new ResponseStatusException(
-                                HttpStatus.BAD_REQUEST, "Last activity sequence number was " + lastSeqNum + ". If you need changes use equal/lower number");
-                    }
-                    // @TODO method than changes all seq numb
-                    //change(allActivities, updatedActivity.getSequenceNumber());
-                }
-            }
-
             try{
                 if(Status.valueOf(updatedActivity.getStatus()) == Status.CANCELED ||
                         Status.valueOf(updatedActivity.getStatus()) == Status.FINISH)
