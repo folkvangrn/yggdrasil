@@ -114,6 +114,7 @@ public class VehicleController {
                 Vehicle vehicle = this.vehicleService.findByVin(vin);
                 vehicle.setClient(this.clientService.findById(newVehicle.getClientId()));
                 vehicle.setVehicleClass(newVehicle.getVehicleClass());
+                this.vehicleService.save(vehicle);
             } catch (InvalidArgumentException e) {
                 throw new  ResponseStatusException(
                         HttpStatus.BAD_REQUEST, e.getMessage());
