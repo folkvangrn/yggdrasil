@@ -46,6 +46,9 @@ public class RequestController {
             Request request = this.modelMapper.map(requestDTO, Request.class);
             request.setDateRequest(new Date());
             request.setStatus(Status.OPEN);
+            if(!this.userService.findById(requestDTO.getManagerId()).getRole().equals("manager"))
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "You have to assign manager to the request.");
             request.setManager(this.userService.findById(requestDTO.getManagerId()));
             requestService.save(request);
         } catch (InvalidArgumentException e){
@@ -104,6 +107,9 @@ public class RequestController {
             Request request = this.requestService.findById(id);
             if (request.getStatus() == Status.CANCELED || request.getStatus() == Status.FINISH)
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request with id " + id + " is " + request.getStatus() + " and cannot be modified");
+            if(!this.userService.findById(updatedRequest.getManagerId()).getRole().equals("manager"))
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "You have to assign manager to the request.");
             try {
                 if(Status.valueOf(updatedRequest.getStatus()) == Status.CANCELED ||
                         Status.valueOf(updatedRequest.getStatus()) == Status.FINISH)

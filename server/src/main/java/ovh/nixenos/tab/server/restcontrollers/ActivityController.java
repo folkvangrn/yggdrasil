@@ -94,9 +94,26 @@ public class ActivityController {
      */
     @PostMapping(value = "/api/activities")
     public void createActivity(@RequestBody ActivityRequest newActivity){
+        //validate seq numb
+        List<Activity> allActivities = this.activityService.findAllByRequestId(newActivity.getRequestId());
+        if(newActivity.getSequenceNumber() != null && allActivities.size() > 0) {
+            Long lastSeqNum = allActivities.get(allActivities.size() - 1).getSequenceNumber();
+            if (newActivity.getSequenceNumber() <= lastSeqNum) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "New activity sequence number has to be greater than the previous: " + lastSeqNum);
+            } else if(newActivity.getSequenceNumber() != lastSeqNum+1) {
+                long newNumber = lastSeqNum+1;
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "New activity sequence number has to be: " + newNumber);
+            }
+        }
+        if(!this.userService.findById(newActivity.getWorkerId()).getRole().equals("worker"))
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "You have to assign worker to the activity.");
         try {
             Activity activity = this.modelMapper.map(newActivity, Activity.class);
-            // ? should we check sequence number?
+
+            activity.setSequenceNumber(newActivity.getSequenceNumber());
             activity.setDateRequested(new Date());
             activity.setStatus(Status.OPEN);
             activity.setRequest(this.requestService.findById(newActivity.getRequestId()));
@@ -128,6 +145,9 @@ public class ActivityController {
                                @PathVariable final Long id) {
         if(this.activityService.existsById(id)){
             Activity activity = this.activityService.findById(id);
+            if(!this.userService.findById(updatedActivity.getWorkerId()).getRole().equals("worker"))
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "You have to assign worker to the activity.");
             if(activity.getStatus() == Status.CANCELED || activity.getStatus() == Status.FINISH)
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Activity with id " + id + " has status " + activity.getStatus() + " and cannot be modified!");
@@ -136,11 +156,21 @@ public class ActivityController {
                         Status.valueOf(updatedActivity.getStatus()) == Status.FINISH)
                     activity.setDateClosed(new Date());
 
+                List<Activity> allActivities = this.activityService.findAllByRequestId(updatedActivity.getRequestId());
+                if(updatedActivity.getSequenceNumber() != null && allActivities.size() >0) {
+                    Long lastSeqNum = allActivities.get(allActivities.size() - 1).getSequenceNumber();
+                    if (lastSeqNum >= updatedActivity.getSequenceNumber()) {
+                        throw new ResponseStatusException(
+                                HttpStatus.BAD_REQUEST, "Last activity sequence number was " + lastSeqNum + ". New has to be greater!");
+                    } else {
+                        activity.setSequenceNumber(updatedActivity.getSequenceNumber());
+                    }
+                }
+
                 activity.setSequenceNumber(updatedActivity.getSequenceNumber()); // maybe it should be immutable?
                 activity.setDescription(updatedActivity.getDescription());
                 activity.setResult(updatedActivity.getResult());
                 activity.setStatus(Status.valueOf(updatedActivity.getStatus()));
-                activity.setRequest(this.requestService.findById(updatedActivity.getRequestId())); // same as above
                 activity.setWorker(this.userService.findById(updatedActivity.getWorkerId()));
                 activity.setActivityDefinition(this.activityDictionaryService.findById(updatedActivity.getActivityDictionaryActivityType()));
                 this.activityService.save(activity);

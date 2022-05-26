@@ -72,6 +72,9 @@ public class VehicleController {
      */
     @PostMapping
     public void addVehicle(@RequestBody VehicleRequest vehicleDto) {
+        if(this.vehicleService.existsById(vehicleDto.getVin()))
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Vehicle with vin: " + vehicleDto.getVin() + " already exists!");
         try {
             Vehicle vehicle = this.modelMapper.map(vehicleDto, Vehicle.class);
             Client client = clientService.findById(vehicleDto.getClientId());
