@@ -27,7 +27,7 @@ public class ActivityDictionaryController {
      * @return Informations about activity dictionary with given id
      */
     @GetMapping(value = "/{id}")
-    public ActivityDictionary findById(@PathVariable String id){
+    public ActivityDictionary findById(@PathVariable final String id){
         return this.activityDictionaryService.findById(id);
     }
 

@@ -46,7 +46,7 @@ public class ActivityController {
      * @return Informations about activity with given id
      */
     @GetMapping(value = "/api/activities/{id}")
-    public ActivityResponse findById(@PathVariable Long id) {
+    public ActivityResponse findById(@PathVariable final Long id) {
         if(this.activityService.existsById(id))
             return this.modelMapper.map(activityService.findById(id), ActivityResponse.class);
         else
@@ -61,8 +61,8 @@ public class ActivityController {
      * @return Informations about all activities that match parameters
      */
     @GetMapping(value = "/api/activities")
-    public List<ActivityResponse> findActivitiesByWorkerIdOrStatus(@RequestParam(value = "workerid", required = true) Long workerId,
-                                                                   @RequestParam(value = "status", required = false) String status) {
+    public List<ActivityResponse> findActivitiesByWorkerIdOrStatus(@RequestParam(value = "workerid", required = true) final Long workerId,
+                                                                   @RequestParam(value = "status", required = false) final String status) {
         if(this.userService.existsById(workerId)) {
             try {
                 List<Activity> activities;
@@ -93,7 +93,7 @@ public class ActivityController {
      * @param newActivity Informations about activity that has to be created
      */
     @PostMapping(value = "/api/activities")
-    public void createActivity(@RequestBody ActivityRequest newActivity){
+    public void createActivity(@RequestBody final ActivityRequest newActivity){
         //validate seq numb
         List<Activity> allActivities = this.activityService.findAllByRequestId(newActivity.getRequestId());
         if(newActivity.getSequenceNumber() != null && allActivities.size() > 0) {
@@ -141,7 +141,7 @@ public class ActivityController {
      * @param updatedActivity Informations about activity that has to be updated
      */
     @PutMapping(value = "/api/activities/{id}")
-    public void updateActivity(@RequestBody ActivityRequest updatedActivity,
+    public void updateActivity(@RequestBody final ActivityRequest updatedActivity,
                                @PathVariable final Long id) {
         if(this.activityService.existsById(id)){
             Activity activity = this.activityService.findById(id);
@@ -151,21 +151,28 @@ public class ActivityController {
             if(activity.getStatus() == Status.CANCELED || activity.getStatus() == Status.FINISH)
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Activity with id " + id + " has status " + activity.getStatus() + " and cannot be modified!");
+            if(!this.userService.existsById(updatedActivity.getWorkerId()))
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Worker with given id  " + updatedActivity.getWorkerId() + " does not exists!");
+            List<Activity> allActivities = this.activityService.findAllByRequestId(updatedActivity.getRequestId());
+            if(updatedActivity.getSequenceNumber() != null && allActivities.size() >0) {
+                Long lastSeqNum = allActivities.get(allActivities.size() - 1).getSequenceNumber();
+                if (lastSeqNum >= updatedActivity.getSequenceNumber()) {
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST, "Last activity sequence number was " + lastSeqNum + ". New has to be greater!");
+                } else {
+                    try {
+                        activity.setSequenceNumber(updatedActivity.getSequenceNumber());
+                    } catch (InvalidArgumentException e) {
+                        throw new ResponseStatusException(
+                                HttpStatus.BAD_REQUEST, e.getMessage());
+                    }
+                }
+            }
             try{
                 if(Status.valueOf(updatedActivity.getStatus()) == Status.CANCELED ||
                         Status.valueOf(updatedActivity.getStatus()) == Status.FINISH)
                     activity.setDateClosed(new Date());
-
-                List<Activity> allActivities = this.activityService.findAllByRequestId(updatedActivity.getRequestId());
-                if(updatedActivity.getSequenceNumber() != null && allActivities.size() >0) {
-                    Long lastSeqNum = allActivities.get(allActivities.size() - 1).getSequenceNumber();
-                    if (lastSeqNum >= updatedActivity.getSequenceNumber()) {
-                        throw new ResponseStatusException(
-                                HttpStatus.BAD_REQUEST, "Last activity sequence number was " + lastSeqNum + ". New has to be greater!");
-                    } else {
-                        activity.setSequenceNumber(updatedActivity.getSequenceNumber());
-                    }
-                }
 
                 activity.setSequenceNumber(updatedActivity.getSequenceNumber()); // maybe it should be immutable?
                 activity.setDescription(updatedActivity.getDescription());
@@ -203,9 +210,9 @@ public class ActivityController {
      * @return Informations about all activities that match parameters
      */
     @GetMapping(value = "/api/requests/{id}/activities")
-    public List<ActivityResponse> findActivitiesForRequest(@PathVariable Long id){
+    public List<ActivityResponse> findActivitiesForRequest(@PathVariable final Long id){
         if(this.requestService.existsById(id)){
-            Request request = this.requestService.findById(id);
+            final Request request = this.requestService.findById(id);
             List<Activity> activities = request.getActivities();
             List<ActivityResponse> activitiesResponse = new ArrayList<>();
             for(Activity act : activities)

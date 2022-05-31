@@ -41,7 +41,7 @@ public class RequestController {
      * @param requestDTO Informations about request that has to be created
      */
     @PostMapping
-    public void createRequest(@RequestBody RequestRequest requestDTO) {
+    public void createRequest(@RequestBody final RequestRequest requestDTO) {
         try {
             Request request = this.modelMapper.map(requestDTO, Request.class);
             request.setDateRequest(new Date());
@@ -73,8 +73,8 @@ public class RequestController {
      * @return Informations about all requests that match parameters
      */
     @GetMapping
-    public List<RequestResponse> findRequests(@RequestParam(value = "managerid", required = true) Long managerId,
-                                              @RequestParam(value = "status", required = false) String status) {
+    public List<RequestResponse> findRequests(@RequestParam(value = "managerid", required = true) final Long managerId,
+                                              @RequestParam(value = "status", required = false) final String status) {
         List<Request> requestsResult;
         try {
             if (status != null) {
@@ -102,7 +102,7 @@ public class RequestController {
      * @param updatedRequest Informations about request that has to be updated
      */
     @PutMapping(value = "/{id}")
-    public void updateRequest(@RequestBody RequestRequest updatedRequest,@PathVariable Long id) {
+    public void updateRequest(@RequestBody final RequestRequest updatedRequest,@PathVariable final Long id) {
         if(this.requestService.existsById(id)) {
             Request request = this.requestService.findById(id);
             if (request.getStatus() == Status.CANCELED || request.getStatus() == Status.FINISH)
@@ -150,7 +150,7 @@ public class RequestController {
      * @return Informations about request that match parameters
      */
     @GetMapping(value = "/{id}")
-    public RequestResponse getRequestById(@PathVariable Long id){
+    public RequestResponse getRequestById(@PathVariable final Long id){
         if(this.requestService.existsById(id)){
             return this.modelMapper.map(this.requestService.findById(id), RequestResponse.class);
         } else {
