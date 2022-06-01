@@ -38,7 +38,7 @@ public class VehicleController {
      */
     @GetMapping
     public List<VehicleResponse> getAll(
-            @RequestParam(value = "clientid", required = false) Long clientId) {
+            @RequestParam(value = "clientid", required = false) final Long clientId) {
         List<Vehicle> vehicles;
         if(clientId == null)
             vehicles = this.vehicleService.findAll();
@@ -58,7 +58,7 @@ public class VehicleController {
      * @return Informations about vehicle with given vin
      */
     @GetMapping(value = "/{vin}")
-    public VehicleResponse findByVin(@PathVariable String vin) {
+    public VehicleResponse findByVin(@PathVariable final String vin) {
         if(this.vehicleService.existsById(vin))
             return this.modelMapper.map(this.vehicleService.findByVin(vin), VehicleResponse.class);
         else
@@ -71,10 +71,13 @@ public class VehicleController {
      * @param vehicleDto Informations about vehicle that has to be created
      */
     @PostMapping
-    public void addVehicle(@RequestBody VehicleRequest vehicleDto) {
+    public void addVehicle(@RequestBody final VehicleRequest vehicleDto) {
+        if(this.vehicleService.existsById(vehicleDto.getVin()))
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Vehicle with vin: " + vehicleDto.getVin() + " already exists!");
         try {
             Vehicle vehicle = this.modelMapper.map(vehicleDto, Vehicle.class);
-            Client client = clientService.findById(vehicleDto.getClientId());
+            final Client client = clientService.findById(vehicleDto.getClientId());
             vehicle.setClient(client);
             this.vehicleService.addVehicle(vehicle);
         } catch ( MappingException e) {
@@ -104,13 +107,14 @@ public class VehicleController {
      * @param newVehicle Informations about vehicle that has to be updated
      */
     @PutMapping(value = "/{vin}")
-    public void updateVehicle(@RequestBody VehicleRequest newVehicle,
-                              @PathVariable String vin){
+    public void updateVehicle(@RequestBody final VehicleRequest newVehicle,
+                              @PathVariable final String vin){
         if(this.vehicleService.existsById(vin)){
             try {
                 Vehicle vehicle = this.vehicleService.findByVin(vin);
                 vehicle.setClient(this.clientService.findById(newVehicle.getClientId()));
                 vehicle.setVehicleClass(newVehicle.getVehicleClass());
+                this.vehicleService.save(vehicle);
             } catch (InvalidArgumentException e) {
                 throw new  ResponseStatusException(
                         HttpStatus.BAD_REQUEST, e.getMessage());

@@ -48,7 +48,7 @@ public class ClientController {
      * @param newClientInput Informations about client that has to be created
      */
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE })
-    ClientResponse addNewClient(@RequestBody ClientRequest newClientInput) {
+    ClientResponse addNewClient(@RequestBody final ClientRequest newClientInput) {
         try {
             Pattern phoneRegexPattern = Pattern
                     .compile("^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{3}$");
@@ -81,7 +81,7 @@ public class ClientController {
      * @return Informations about client that matches parameters
      */
     @GetMapping(value = "{id}")
-    ClientResponse getClientById(@PathVariable Long id) {
+    ClientResponse getClientById(@PathVariable final Long id) {
         try {
             Client client = this.clientService.findById(id);
             return modelMapper.map(client, ClientResponse.class);
@@ -97,7 +97,7 @@ public class ClientController {
      * @param inputClient Informations about client that has to be updated
      */
     @PutMapping(value = "{id}")
-    ClientResponse updateClientById(@PathVariable Long id, @RequestBody ClientRequest inputClient) {
+    ClientResponse updateClientById(@PathVariable final Long id, @RequestBody final ClientRequest inputClient) {
         try {
             Pattern phoneRegexPattern = Pattern
                     .compile("^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{3}$");
@@ -129,7 +129,7 @@ public class ClientController {
     }
 
     @DeleteMapping(value = "{id}")
-    String deleteClientById(@PathVariable Long id) {
+    String deleteClientById(@PathVariable final Long id) {
         try {
             this.clientService.deleteById(id);
             return "OK";

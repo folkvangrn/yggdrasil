@@ -119,7 +119,7 @@ public class UserController {
         user.suspendAccount();
       }
       if (entity.getPassword() != null) {
-        if (user.getPassword() != entity.getPassword()) {
+        if (!user.getPassword().equals(entity.getPassword())) {
           if (!entity.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(entity.getPassword()));
           }
