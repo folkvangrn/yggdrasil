@@ -91,7 +91,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/login**").permitAll()
                 .antMatchers("/api/users").hasAuthority("admin")
                 .antMatchers("/api/users/managers").hasAuthority("manager")
-                .anyRequest().permitAll()
+                .antMatchers("/api/users/workers").hasAuthority("manager")
+                .antMatchers("/api/users/workers").hasAuthority("worker")
+                .antMatchers("/api/clients**").hasAuthority("manager")
+                .antMatchers("/api/vehicles**").hasAuthority("manager")
+                .antMatchers("/api/requests**").hasAuthority("manager")
+                .antMatchers("/api/requests/**/activities").hasAuthority("worker")
+                .antMatchers("/api/activities**").hasAuthority("worker")
+                .antMatchers("/api/activities**").hasAuthority("manager")
+                .antMatchers("/api/activity-dictionary**").hasAuthority("worker")
+                .antMatchers("/api/activity-dictionary**").hasAuthority("manager")
+                .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -136,7 +146,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(
-                Arrays.asList("http://127.0.0.1:3000", "http://127.0.0.1:8080", "http://localhost:8080", "http://localhost:3000"));
+                Arrays.asList("http://127.0.0.1:3000", "http://127.0.0.1:8080", "http://localhost:8080",
+                        "http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

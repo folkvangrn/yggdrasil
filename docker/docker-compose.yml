@@ -28,6 +28,10 @@ services:
       - SPRING_DATASOURCE_USERNAME=tabprojekt
       - SPRING_DATASOURCE_PASSWORD=tabprojekt
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - APP_ADMIN_USERNAME=administrator
+      - APP_ADMIN_PASSWORD=admin1234
+      - APP_ADMIN_FIRSTNAME=test
+      - APP_ADMIN_LASTNAME=test
     ports:
       - 8088:8080
     depends_on:
