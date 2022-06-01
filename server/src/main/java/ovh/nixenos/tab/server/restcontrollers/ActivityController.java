@@ -40,8 +40,13 @@ public class ActivityController {
     @Autowired
     private ModelMapper modelMapper;
 
+    /**
+     * Endpoint that enables retrieving informations about specified activity
+     * @param id Id of activity
+     * @return Informations about activity with given id
+     */
     @GetMapping(value = "/api/activities/{id}")
-    public ActivityResponse findById(@PathVariable Long id) {
+    public ActivityResponse findById(@PathVariable final Long id) {
         if(this.activityService.existsById(id))
             return this.modelMapper.map(activityService.findById(id), ActivityResponse.class);
         else
@@ -49,9 +54,15 @@ public class ActivityController {
                     HttpStatus.BAD_REQUEST, "Activity with id " + id + " does not exist!");
     }
 
+    /**
+     * Endpoint that enables retrieving informations about specified activities
+     * @param workerId Id of worker that we want to see activities
+     * @param status Status which by activities will be filtered
+     * @return Informations about all activities that match parameters
+     */
     @GetMapping(value = "/api/activities")
-    public List<ActivityResponse> findActivitiesByWorkerIdOrStatus(@RequestParam(value = "workerid", required = true) Long workerId,
-                                                                   @RequestParam(value = "status", required = false) String status) {
+    public List<ActivityResponse> findActivitiesByWorkerIdOrStatus(@RequestParam(value = "workerid", required = true) final Long workerId,
+                                                                   @RequestParam(value = "status", required = false) final String status) {
         if(this.userService.existsById(workerId)) {
             try {
                 List<Activity> activities;
@@ -77,15 +88,36 @@ public class ActivityController {
         }
     }
 
+    /**
+     * Endpoint that enables creating activity
+     * @param newActivity Informations about activity that has to be created
+     */
     @PostMapping(value = "/api/activities")
-    public void createActivity(@RequestBody ActivityRequest newActivity){
+    public void createActivity(@RequestBody final ActivityRequest newActivity){
+        //validate seq numb
+        List<Activity> allActivities = this.activityService.findAllByRequestId(newActivity.getRequestId());
+        if(newActivity.getSequenceNumber() != null && allActivities.size() > 0) {
+            Long lastSeqNum = allActivities.get(allActivities.size() - 1).getSequenceNumber();
+            if (newActivity.getSequenceNumber() <= lastSeqNum) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "New activity sequence number has to be greater than the previous: " + lastSeqNum);
+            } else if(newActivity.getSequenceNumber() != lastSeqNum+1) {
+                long newNumber = lastSeqNum+1;
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "New activity sequence number has to be: " + newNumber);
+            }
+        }
+        if(!this.userService.findById(newActivity.getWorkerId()).getRole().equals("worker"))
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "You have to assign worker to the activity.");
         try {
             Activity activity = this.modelMapper.map(newActivity, Activity.class);
-            // ? should we check sequence number?
+
+            activity.setSequenceNumber(newActivity.getSequenceNumber());
             activity.setDateRequested(new Date());
             activity.setStatus(Status.OPEN);
             activity.setRequest(this.requestService.findById(newActivity.getRequestId()));
-            activity.setWorker(this.userService.findById(newActivity.getUserId()));
+            activity.setWorker(this.userService.findById(newActivity.getWorkerId()));
             activity.setActivityDefinition(this.activityDictionaryService.findById(newActivity.getActivityDictionaryActivityType()));
             this.activityService.save(activity);
         } catch (InvalidArgumentException e){
@@ -103,14 +135,40 @@ public class ActivityController {
         }
     }
 
+    /**
+     * Endpoint that enables updating existing activity
+     * @param id Id of activity that has to be updated
+     * @param updatedActivity Informations about activity that has to be updated
+     */
     @PutMapping(value = "/api/activities/{id}")
-    public void updateActivity(@RequestBody ActivityRequest updatedActivity,
+    public void updateActivity(@RequestBody final ActivityRequest updatedActivity,
                                @PathVariable final Long id) {
         if(this.activityService.existsById(id)){
             Activity activity = this.activityService.findById(id);
+            if(!this.userService.findById(updatedActivity.getWorkerId()).getRole().equals("worker"))
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "You have to assign worker to the activity.");
             if(activity.getStatus() == Status.CANCELED || activity.getStatus() == Status.FINISH)
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Activity with id " + id + " has status " + activity.getStatus() + " and cannot be modified!");
+            if(!this.userService.existsById(updatedActivity.getWorkerId()))
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Worker with given id  " + updatedActivity.getWorkerId() + " does not exists!");
+            List<Activity> allActivities = this.activityService.findAllByRequestId(updatedActivity.getRequestId());
+            if(updatedActivity.getSequenceNumber() != null && allActivities.size() >0) {
+                Long lastSeqNum = allActivities.get(allActivities.size() - 1).getSequenceNumber();
+                if (lastSeqNum >= updatedActivity.getSequenceNumber()) {
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST, "Last activity sequence number was " + lastSeqNum + ". New has to be greater!");
+                } else {
+                    try {
+                        activity.setSequenceNumber(updatedActivity.getSequenceNumber());
+                    } catch (InvalidArgumentException e) {
+                        throw new ResponseStatusException(
+                                HttpStatus.BAD_REQUEST, e.getMessage());
+                    }
+                }
+            }
             try{
                 if(Status.valueOf(updatedActivity.getStatus()) == Status.CANCELED ||
                         Status.valueOf(updatedActivity.getStatus()) == Status.FINISH)
@@ -120,8 +178,7 @@ public class ActivityController {
                 activity.setDescription(updatedActivity.getDescription());
                 activity.setResult(updatedActivity.getResult());
                 activity.setStatus(Status.valueOf(updatedActivity.getStatus()));
-                activity.setRequest(this.requestService.findById(updatedActivity.getRequestId())); // same as above
-                activity.setWorker(this.userService.findById(updatedActivity.getUserId()));
+                activity.setWorker(this.userService.findById(updatedActivity.getWorkerId()));
                 activity.setActivityDefinition(this.activityDictionaryService.findById(updatedActivity.getActivityDictionaryActivityType()));
                 this.activityService.save(activity);
             } catch (InvalidArgumentException e) {
@@ -135,7 +192,7 @@ public class ActivityController {
                         HttpStatus.BAD_REQUEST, e.getMessage());
             } catch (IllegalArgumentException e) {
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "Provided " + updatedActivity.getStatus() + " is not a valid request status");
+                        HttpStatus.BAD_REQUEST, "Provided " + updatedActivity.getStatus() + " is not a valid activity status");
             } catch (Exception e){
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Error while updating request");
@@ -147,10 +204,15 @@ public class ActivityController {
         }
     }
 
+    /**
+     * Endpoint that enables retrieving informations about specified activities
+     * @param id Id of request which activities will be returned
+     * @return Informations about all activities that match parameters
+     */
     @GetMapping(value = "/api/requests/{id}/activities")
-    public List<ActivityResponse> findActivitiesForRequest(@PathVariable Long id){
+    public List<ActivityResponse> findActivitiesForRequest(@PathVariable final Long id){
         if(this.requestService.existsById(id)){
-            Request request = this.requestService.findById(id);
+            final Request request = this.requestService.findById(id);
             List<Activity> activities = request.getActivities();
             List<ActivityResponse> activitiesResponse = new ArrayList<>();
             for(Activity act : activities)

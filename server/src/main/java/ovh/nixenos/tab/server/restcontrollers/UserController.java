@@ -3,6 +3,7 @@ package ovh.nixenos.tab.server.restcontrollers;
 import com.google.gson.*;
 import java.util.ArrayList;
 import org.hibernate.annotations.NotFound;
+import org.modelmapper.MappingException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -36,12 +37,20 @@ import ovh.nixenos.tab.server.users.User;
 @RequestMapping("/api/users")
 public class UserController {
 
-  @Autowired private UserService userService;
+  @Autowired
+  private UserService userService;
 
-  @Autowired PasswordEncoder passwordEncoder;
+  @Autowired
+  PasswordEncoder passwordEncoder;
 
-  @Autowired private ModelMapper modelMapper;
+  @Autowired
+  private ModelMapper modelMapper;
 
+  /**
+   * Endpoint that enables retrieving informations about all users
+   * 
+   * @return Informations about all users in database
+   */
   @GetMapping()
   public ArrayList<UserDTOOutput> getAllUsers() {
     Iterable<User> listOfUsers = this.userService.findAll();
@@ -52,8 +61,16 @@ public class UserController {
     return resultListOFUsers;
   }
 
-  @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
+  /**
+   * Endpoint that enables creating user
+   * 
+   * @param newUser Informations about user which has to be created
+   */
+  @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE })
   public UserDTOOutput createNewUser(@RequestBody UserDTOInput newUser) {
+    if (this.userService.findByUsername(newUser.getUsername()) != null) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User with the same username exists!");
+    }
     String tempPass = newUser.getPassword();
     newUser.setPassword(passwordEncoder.encode(tempPass));
     User user = this.modelMapper.map(newUser, User.class);
@@ -63,6 +80,12 @@ public class UserController {
     return output;
   }
 
+  /**
+   * Endpoint that enables retrieving informations about specified user
+   * 
+   * @param id Id of user
+   * @return Informations about user with given id
+   */
   @GetMapping(value = "{id}")
   public UserDTOOutput getUserById(@PathVariable Long id) {
     User user = userService.findById(id);
@@ -72,9 +95,15 @@ public class UserController {
     throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity not found");
   }
 
+  /**
+   * Endpoint that enables updating existing user
+   * 
+   * @param id     Id of user that has to be updated
+   * @param entity Informations about user that has to be updated
+   */
   @PutMapping(value = "{id}")
   public UserDTOOutput updateUserById(@PathVariable Long id,
-                                      @RequestBody UserDTOInput entity) {
+      @RequestBody UserDTOInput entity) {
     User user = userService.findById(id);
     try {
       user.setFirstName(entity.getFirstName());
@@ -82,7 +111,7 @@ public class UserController {
       user.setRole(entity.getRole());
       if (!entity.getUsername().equals(user.getUsername())) {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                                          "Cannot modify username!");
+            "Cannot modify username!");
       }
       if (entity.getActive()) {
         user.activateAccount();
@@ -90,7 +119,7 @@ public class UserController {
         user.suspendAccount();
       }
       if (entity.getPassword() != null) {
-        if (user.getPassword() != entity.getPassword()) {
+        if (!user.getPassword().equals(entity.getPassword())) {
           if (!entity.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(entity.getPassword()));
           }
@@ -98,17 +127,55 @@ public class UserController {
       }
     } catch (InvalidArgumentException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                                        "Invalid data provided");
+          "Invalid data provided");
     }
     userService.save(user);
     return modelMapper.map(user, UserDTOOutput.class);
   }
 
-  /*
-  @DeleteMapping(value = "{id}")
-  public String deleteUserById(@PathVariable Integer id) {
-    userService.deleteById(id);
-    return "{\"status\" : \"success\"}";
+  /**
+   * Endpoint that enables retrieving data about all managers in database
+   * 
+   * @return List of managers
+   */
+  @GetMapping(value = "/managers")
+  public ArrayList<UserDTOOutput> findManagers() {
+    Iterable<User> listOfUsers = this.userService.findAllByRole("manager");
+    ArrayList<UserDTOOutput> resultListOFUsers = new ArrayList<>();
+    try {
+      for (User user : listOfUsers)
+        resultListOFUsers.add(this.modelMapper.map(user, UserDTOOutput.class));
+    } catch (MappingException e) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, e.getCause().getMessage());
+    }
+    return resultListOFUsers;
   }
-  */
+
+  /**
+   * Endpoint that enables retrieving data about all workers in database
+   * 
+   * @return List of workers
+   */
+  @GetMapping(value = "/workers")
+  public ArrayList<UserDTOOutput> findWorkers() {
+    Iterable<User> listOfUsers = this.userService.findAllByRole("worker");
+    ArrayList<UserDTOOutput> resultListOFUsers = new ArrayList<>();
+    try {
+      for (User user : listOfUsers)
+        resultListOFUsers.add(this.modelMapper.map(user, UserDTOOutput.class));
+    } catch (MappingException e) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, e.getCause().getMessage());
+    }
+    return resultListOFUsers;
+  }
+
+  /*
+   * @DeleteMapping(value = "{id}")
+   * public String deleteUserById(@PathVariable Integer id) {
+   * userService.deleteById(id);
+   * return "{\"status\" : \"success\"}";
+   * }
+   */
 }

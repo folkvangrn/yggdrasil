@@ -36,12 +36,19 @@ public class RequestController {
     @Autowired
     private ModelMapper modelMapper;
 
+    /**
+     * Endpoint that enables creating request
+     * @param requestDTO Informations about request that has to be created
+     */
     @PostMapping
-    public void createRequest(@RequestBody RequestRequest requestDTO) {
+    public void createRequest(@RequestBody final RequestRequest requestDTO) {
         try {
             Request request = this.modelMapper.map(requestDTO, Request.class);
             request.setDateRequest(new Date());
             request.setStatus(Status.OPEN);
+            if(!this.userService.findById(requestDTO.getManagerId()).getRole().equals("manager"))
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "You have to assign manager to the request.");
             request.setManager(this.userService.findById(requestDTO.getManagerId()));
             requestService.save(request);
         } catch (InvalidArgumentException e){
@@ -59,9 +66,15 @@ public class RequestController {
         }
     }
 
+    /**
+     * Endpoint that enables retrieving informations about specified requests
+     * @param managerId Id of manager that we want to see activities
+     * @param status Status which by requests will be filtered
+     * @return Informations about all requests that match parameters
+     */
     @GetMapping
-    public List<RequestResponse> findRequests(@RequestParam(value = "managerid", required = true) Long managerId,
-                                              @RequestParam(value = "status", required = false) String status) {
+    public List<RequestResponse> findRequests(@RequestParam(value = "managerid", required = true) final Long managerId,
+                                              @RequestParam(value = "status", required = false) final String status) {
         List<Request> requestsResult;
         try {
             if (status != null) {
@@ -83,16 +96,24 @@ public class RequestController {
 
     }
 
+    /**
+     * Endpoint that enables updating existing request
+     * @param id Id of request that has to be updated
+     * @param updatedRequest Informations about request that has to be updated
+     */
     @PutMapping(value = "/{id}")
-    public void updateRequest(@RequestBody RequestRequest updatedRequest,@PathVariable Long id) {
+    public void updateRequest(@RequestBody final RequestRequest updatedRequest,@PathVariable final Long id) {
         if(this.requestService.existsById(id)) {
             Request request = this.requestService.findById(id);
             if (request.getStatus() == Status.CANCELED || request.getStatus() == Status.FINISH)
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request with id " + id + " is " + request.getStatus() + " and cannot be modified");
+            if(!this.userService.findById(updatedRequest.getManagerId()).getRole().equals("manager"))
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "You have to assign manager to the request.");
             try {
                 if(Status.valueOf(updatedRequest.getStatus()) == Status.CANCELED ||
                         Status.valueOf(updatedRequest.getStatus()) == Status.FINISH)
-                    request.setDateFinalized(new Date());
+                    request.setDateClosed(new Date());
 
                 request.setDescription(updatedRequest.getDescription());
                 request.setResult(updatedRequest.getResult());
@@ -123,8 +144,13 @@ public class RequestController {
         }
     }
 
+    /**
+     * Endpoint that enables retrieving informations about specified request
+     * @param id Id of request which will be returned
+     * @return Informations about request that match parameters
+     */
     @GetMapping(value = "/{id}")
-    public RequestResponse getRequestById(@PathVariable Long id){
+    public RequestResponse getRequestById(@PathVariable final Long id){
         if(this.requestService.existsById(id)){
             return this.modelMapper.map(this.requestService.findById(id), RequestResponse.class);
         } else {

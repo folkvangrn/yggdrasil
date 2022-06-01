@@ -68,6 +68,10 @@ public class UserService {
         return this.userRepository.existsById(id);
     }
 
+    public List<User> findAllByRole(final String role) {
+        return this.userRepository.findAllByRole(role);
+    }
+
     @PostConstruct
     public void createDefaultAdmin() {
         /*

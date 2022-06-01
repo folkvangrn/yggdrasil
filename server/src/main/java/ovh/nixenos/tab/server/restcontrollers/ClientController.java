@@ -2,6 +2,8 @@ package ovh.nixenos.tab.server.restcontrollers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,11 @@ public class ClientController {
     @Autowired
     ModelMapper modelMapper;
 
+    /**
+     * Endpoint that enables retrieving informations about all clients
+     * 
+     * @return Informations about all clients
+     */
     @GetMapping
     List<ClientResponse> getAllClients() {
         Iterable<Client> listOfClients = this.clientService.findAll();
@@ -35,9 +42,29 @@ public class ClientController {
         return resultListOfClients;
     }
 
+    /**
+     * Endpoint that enables creating client
+     * 
+     * @param newClientInput Informations about client that has to be created
+     */
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE })
-    ClientResponse addNewClient(@RequestBody ClientRequest newClientInput) {
+    ClientResponse addNewClient(@RequestBody final ClientRequest newClientInput) {
         try {
+            Pattern phoneRegexPattern = Pattern
+                    .compile("^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{3}$");
+            Matcher phoneNumberMatcher = phoneRegexPattern.matcher(newClientInput.getPhoneNumber());
+            if (!phoneNumberMatcher.matches()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Invalid phone number specified!");
+            }
+            // RFC 5322
+            Pattern emailRegexPattern = Pattern
+                    .compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
+            Matcher emailMatcher = emailRegexPattern.matcher(newClientInput.getEmail());
+            if (!emailMatcher.matches()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Invalid email specified!");
+            }
             Client newClient = modelMapper.map(newClientInput, Client.class);
             clientService.save(newClient);
             return modelMapper.map(newClient, ClientResponse.class);
@@ -47,8 +74,14 @@ public class ClientController {
         }
     }
 
+    /**
+     * Endpoint that enables retrieving informations about specified client
+     * 
+     * @param id Id of client that will be returned
+     * @return Informations about client that matches parameters
+     */
     @GetMapping(value = "{id}")
-    ClientResponse getClientById(@PathVariable Long id) {
+    ClientResponse getClientById(@PathVariable final Long id) {
         try {
             Client client = this.clientService.findById(id);
             return modelMapper.map(client, ClientResponse.class);
@@ -57,9 +90,30 @@ public class ClientController {
         }
     }
 
+    /**
+     * Endpoint that enables updating existing client
+     * 
+     * @param id          Id of client that has to be updated
+     * @param inputClient Informations about client that has to be updated
+     */
     @PutMapping(value = "{id}")
-    ClientResponse updateClientById(@PathVariable Long id, @RequestBody ClientRequest inputClient) {
+    ClientResponse updateClientById(@PathVariable final Long id, @RequestBody final ClientRequest inputClient) {
         try {
+            Pattern phoneRegexPattern = Pattern
+                    .compile("^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{3}$");
+            Matcher phoneNumberMatcher = phoneRegexPattern.matcher(inputClient.getPhoneNumber());
+            if (!phoneNumberMatcher.matches()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Invalid phone number specified!");
+            }
+            // RFC 5322
+            Pattern emailRegexPattern = Pattern
+                    .compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
+            Matcher emailMatcher = emailRegexPattern.matcher(inputClient.getEmail());
+            if (!emailMatcher.matches()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Invalid email specified!");
+            }
             Client client = this.clientService.findById(id);
             Client updatedClient = modelMapper.map(inputClient, Client.class);
             client.setFirstName(updatedClient.getFirstName());
@@ -75,7 +129,7 @@ public class ClientController {
     }
 
     @DeleteMapping(value = "{id}")
-    String deleteClientById(@PathVariable Long id) {
+    String deleteClientById(@PathVariable final Long id) {
         try {
             this.clientService.deleteById(id);
             return "OK";

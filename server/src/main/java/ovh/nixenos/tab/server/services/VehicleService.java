@@ -40,4 +40,6 @@ public class VehicleService {
     public List<Vehicle> findVehiclesByClientId(Long id){
         return this.vehicleRepository.findVehiclesByClient_Id(id);
     }
+
+    public void save(Vehicle vehicle) {this.vehicleRepository.save(vehicle);}
 }

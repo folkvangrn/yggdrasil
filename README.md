@@ -1,7 +1,14 @@
 # yggdrasil
 Yggdrasil is a backend service for workshop-managing web application.
 
-## How to run
+## How to run (current solution using Docker compose and nginx proxy)
+
+ - checkout current repo
+ - cd into docker/ directory: ```cd docker```
+ - run ```docker-compose up``` 
+ - enjoy your backend at ```http://localhost:8000```
+
+## How to run (deprcated)
 
  - cd into server/ directory: ```cd server```
  - build new jar file: ```./mvnw clean package``` (for UNIX-based systems)

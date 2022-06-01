@@ -84,13 +84,7 @@ public class Activity {
         return result;
     }
 
-    public void setResult(String result) throws InvalidArgumentException {
-        if (result == null) {
-            throw new InvalidArgumentException("Result cannot be null");
-        }
-        if ((result.isBlank())) {
-            throw new InvalidArgumentException("Result cannot be blank");
-        }
+    public void setResult(String result) {
         this.result = result;
     }
 
@@ -98,10 +92,7 @@ public class Activity {
         return status;
     }
 
-    public void setStatus(Status status) throws InvalidArgumentException {
-        if( status == null) {
-            throw new InvalidArgumentException("Status enum cannot be null");
-        }
+    public void setStatus(Status status) {
         this.status = status;
     }
 
