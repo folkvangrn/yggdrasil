@@ -97,6 +97,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/vehicles**").hasAuthority("manager")
                 .antMatchers("/api/requests**").hasAuthority("manager")
                 .antMatchers("/api/requests/**/activities").hasAuthority("worker")
+                .antMatchers("/api/requests/**/activities").hasAuthority("manager")
                 .antMatchers("/api/activities**").hasAuthority("worker")
                 .antMatchers("/api/activities**").hasAuthority("manager")
                 .antMatchers("/api/activity-dictionary**").hasAuthority("worker")

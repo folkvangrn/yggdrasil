@@ -49,7 +49,6 @@ public class ClientController {
      */
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE })
     ClientResponse addNewClient(@RequestBody final ClientRequest newClientInput) {
-        try {
             Pattern phoneRegexPattern = Pattern
                     .compile("^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{3}$");
             Matcher phoneNumberMatcher = phoneRegexPattern.matcher(newClientInput.getPhoneNumber());
@@ -65,6 +64,7 @@ public class ClientController {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Invalid email specified!");
             }
+        try {
             Client newClient = modelMapper.map(newClientInput, Client.class);
             clientService.save(newClient);
             return modelMapper.map(newClient, ClientResponse.class);
@@ -98,7 +98,6 @@ public class ClientController {
      */
     @PutMapping(value = "{id}")
     ClientResponse updateClientById(@PathVariable final Long id, @RequestBody final ClientRequest inputClient) {
-        try {
             Pattern phoneRegexPattern = Pattern
                     .compile("^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{3}$");
             Matcher phoneNumberMatcher = phoneRegexPattern.matcher(inputClient.getPhoneNumber());
@@ -114,6 +113,7 @@ public class ClientController {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Invalid email specified!");
             }
+        try {
             Client client = this.clientService.findById(id);
             Client updatedClient = modelMapper.map(inputClient, Client.class);
             client.setFirstName(updatedClient.getFirstName());
