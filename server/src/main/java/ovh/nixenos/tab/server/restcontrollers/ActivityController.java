@@ -154,27 +154,11 @@ public class ActivityController {
             if(!this.userService.existsById(updatedActivity.getWorkerId()))
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Worker with given id  " + updatedActivity.getWorkerId() + " does not exists!");
-            List<Activity> allActivities = this.activityService.findAllByRequestId(updatedActivity.getRequestId());
-            if(updatedActivity.getSequenceNumber() != null && allActivities.size() >0) {
-                Long lastSeqNum = allActivities.get(allActivities.size() - 1).getSequenceNumber();
-                if (lastSeqNum >= updatedActivity.getSequenceNumber()) {
-                    throw new ResponseStatusException(
-                            HttpStatus.BAD_REQUEST, "Last activity sequence number was " + lastSeqNum + ". New has to be greater!");
-                } else {
-                    try {
-                        activity.setSequenceNumber(updatedActivity.getSequenceNumber());
-                    } catch (InvalidArgumentException e) {
-                        throw new ResponseStatusException(
-                                HttpStatus.BAD_REQUEST, e.getMessage());
-                    }
-                }
-            }
             try{
                 if(Status.valueOf(updatedActivity.getStatus()) == Status.CANCELED ||
                         Status.valueOf(updatedActivity.getStatus()) == Status.FINISH)
                     activity.setDateClosed(new Date());
 
-                activity.setSequenceNumber(updatedActivity.getSequenceNumber()); // maybe it should be immutable?
                 activity.setDescription(updatedActivity.getDescription());
                 activity.setResult(updatedActivity.getResult());
                 activity.setStatus(Status.valueOf(updatedActivity.getStatus()));
