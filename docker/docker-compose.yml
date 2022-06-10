@@ -1,0 +1,42 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: tabprojekt
+      POSTGRES_USER: tabprojekt
+      POSTGRES_DB: tabprojekt
+    ports:
+      - 6543:5432
+
+  proxy:
+    image: nginx:alpine
+    ports:
+      - 8000:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/templates/default.conf.template
+    depends_on:
+      - backend
+  backend:
+#    image: nixen/yggdrasil:latest
+    image: nixen/yggdrasil:beta-release
+    restart: always
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/tabprojekt
+      - SPRING_DATASOURCE_USERNAME=tabprojekt
+      - SPRING_DATASOURCE_PASSWORD=tabprojekt
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - APP_ADMIN_USERNAME=administrator
+      - APP_ADMIN_PASSWORD=admin1234
+      - APP_ADMIN_FIRSTNAME=test
+      - APP_ADMIN_LASTNAME=test
+    ports:
+      - 8088:8080
+    depends_on:
+      - db
+
+# networks:
+#   tab-network:
+#     driver: bridge
