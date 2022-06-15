@@ -11,8 +11,10 @@ Yggdrasil is a backend service for workshop-managing web application.
 ## Changing the default settings
 
 User can change connection string for the database, database user name and password, default admin's username, password, name, surname and hibernate's update strategy.
-All of that is configurable via ```docker-compose.yml``` file. Note that ```nginx.conf``` file is vital to operation of this configuration, as it contains setting for
-nginx proxy that is used to bypass spring library limitations when it comes to CORS handling. 
+All of that is configurable via ```docker-compose.yml``` file. Note that ```nginx.conf``` file is vital to operation of this configuration, as it contains settings for
+nginx proxy that is used to bypass spring library limitations when it comes to CORS handling.
+
+Please refer to ```docker-compose.yml``` file for more details.
 
 ## Manual deployment
 
