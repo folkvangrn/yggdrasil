@@ -3,7 +3,7 @@ Yggdrasil is a backend service for workshop-managing web application.
 
 ## How to run (current solution using docker-compose and nginx proxy)
 
- - checkout current repo
+ - checkout current repo: ```git clone https://github.com/folkvangrn/yggdrasil.git```
  - cd into docker/ directory: ```cd docker```
  - run ```docker-compose up``` 
  - enjoy your backend at ```http://localhost:8000```
@@ -11,7 +11,8 @@ Yggdrasil is a backend service for workshop-managing web application.
 ## Changing the default settings
 
 User can change connection string for the database, database user name and password, default admin's username, password, name, surname and hibernate's update strategy.
-All of that is configurable via ```docker-compose.yml``` file.
+All of that is configurable via ```docker-compose.yml``` file. Note that ```nginx.conf``` file is vital to operation of this configuration, as it contains setting for
+nginx proxy that is used to bypass spring library limitations when it comes to CORS handling. 
 
 ## Manual deployment
 
