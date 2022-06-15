@@ -1,25 +1,30 @@
 # yggdrasil
 Yggdrasil is a backend service for workshop-managing web application.
 
-## How to run (current solution using Docker compose and nginx proxy)
+## How to run (current solution using docker-compose and nginx proxy)
 
  - checkout current repo
  - cd into docker/ directory: ```cd docker```
  - run ```docker-compose up``` 
  - enjoy your backend at ```http://localhost:8000```
 
-## How to run (deprcated)
+## Changing the default settings
 
- - cd into server/ directory: ```cd server```
- - build new jar file: ```./mvnw clean package``` (for UNIX-based systems)
- - for windows hosts: ```./mvnw.exe clean package```
- - run built jar file: ```java -jar target/server-0.0.1-SNAPSHOT.jar```
+User can change connection string for the database, database user name and password, default admin's username, password, name, surname and hibernate's update strategy.
+All of that is configurable via ```docker-compose.yml``` file.
 
-For development purposes postgresql database is needed to be accessible on host system. Configure it as follows:
+## Manual deployment
 
- - add new database tabprojekt
- - add new user with full access to that database, with password tabprojekt and username tabprojekt
- - make sure postgres is running on port 5432
- - all above things can be configured via application.properties file 
+JAR file will be provided to perform manual deployment. To tune settings one would need to set proper environment variables when executing on UNIX-based systems. Below are some sensible defaults that could be used:
 
+  - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/tabprojekt
+  - SPRING_DATASOURCE_USERNAME=tabprojekt
+  - SPRING_DATASOURCE_PASSWORD=tabprojekt
+  - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+  - APP_ADMIN_USERNAME=administrator
+  - APP_ADMIN_PASSWORD=admin1234
+  - APP_ADMIN_FIRSTNAME=test
+  - APP_ADMIN_LASTNAME=test
+
+## Backend API documentation
 Swagger is avaible after running application under url: http://localhost:8080/swagger-ui/index.html
