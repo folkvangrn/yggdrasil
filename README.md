@@ -26,5 +26,7 @@ JAR file will be provided to perform manual deployment. To tune settings one wou
   - APP_ADMIN_FIRSTNAME=test
   - APP_ADMIN_LASTNAME=test
 
+After that simple ```java -jar app_name.jar``` should set up a backend server. Configuring proxy to serve endpoints at different URLs is highly encouraged, as it might be used to perform load balancing and version management.
+
 ## Backend API documentation
-Swagger is avaible after running application under url: http://localhost:8080/swagger-ui/index.html
+Swagger is avaible after running application on endpoint: ```/swagger-ui/index.html```
